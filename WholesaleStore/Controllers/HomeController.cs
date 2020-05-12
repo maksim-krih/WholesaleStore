@@ -1,8 +1,9 @@
 ﻿using System.Web.Mvc;
+using WholesaleStore.Controllers.Base;
 
 namespace WholesaleStore.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
         public ActionResult Index()
         {
