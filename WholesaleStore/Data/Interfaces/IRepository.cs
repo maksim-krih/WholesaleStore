@@ -13,6 +13,6 @@ namespace WholesaleStore.Data.Interfaces
 
         TEntity Remove(TEntity entity);
 
-        Task<int> CommitAsync(CancellationToken cancellation);
+        Task<int> CommitAsync(CancellationToken cancellation = default);
     }
 }

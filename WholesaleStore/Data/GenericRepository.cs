@@ -37,7 +37,7 @@ namespace WholesaleStore.Data
             return entity;
         }
 
-        public Task<int> CommitAsync(CancellationToken cancellation)
+        public Task<int> CommitAsync(CancellationToken cancellation = default)
         {
             return _dbContext.SaveChangesAsync(cancellation);
         }

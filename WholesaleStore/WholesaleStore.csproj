@@ -158,7 +158,10 @@
     </Compile>
     <Compile Include="Common\GridSortItem.cs" />
     <Compile Include="Controllers\Base\BaseController.cs" />
+    <Compile Include="Controllers\BrandController.cs" />
+    <Compile Include="Controllers\CountryController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\AddressController.cs" />
     <Compile Include="Controllers\SupplierController.cs" />
     <Compile Include="Country.cs">
       <DependentUpon>WholesaleStoreModel.tt</DependentUpon>
@@ -178,6 +181,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Dtos\AddressDto.cs" />
+    <Compile Include="Models\Dtos\SupplierDto.cs" />
     <Compile Include="Order.cs">
       <DependentUpon>WholesaleStoreModel.tt</DependentUpon>
     </Compile>
@@ -221,6 +226,7 @@
     <Compile Include="SupplyShipment.cs">
       <DependentUpon>WholesaleStoreModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Utils\AddressHelper.cs" />
     <Compile Include="WholesaleStoreModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -248,6 +254,7 @@
     <Content Include="Content\site.css" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\addressDropdown.js" />
     <Content Include="WholesaleStoreModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>WholesaleStoreModel.edmx</DependentUpon>
@@ -295,6 +302,16 @@
     <Content Include="Views\Supplier\Details.cshtml" />
     <Content Include="Views\Supplier\Edit.cshtml" />
     <Content Include="Views\Supplier\Index.cshtml" />
+    <Content Include="Views\Brand\Create.cshtml" />
+    <Content Include="Views\Brand\Delete.cshtml" />
+    <Content Include="Views\Brand\Details.cshtml" />
+    <Content Include="Views\Brand\Edit.cshtml" />
+    <Content Include="Views\Brand\Index.cshtml" />
+    <Content Include="Views\Country\Create.cshtml" />
+    <Content Include="Views\Country\Delete.cshtml" />
+    <Content Include="Views\Country\Details.cshtml" />
+    <Content Include="Views\Country\Edit.cshtml" />
+    <Content Include="Views\Country\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\Base\" />

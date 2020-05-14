@@ -27,11 +27,15 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Address.ZipCode)
+            @Html.DisplayNameFor(model => model.Address)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Address.ZipCode)
+            @Html.DisplayFor(modelItem => modelItem.Address.ZipCode),
+            @Html.DisplayFor(modelItem => modelItem.Address.City.Region.Country.Name),
+            @Html.DisplayFor(modelItem => modelItem.Address.City.Region.Name),
+            @Html.DisplayFor(modelItem => modelItem.Address.City.Name),
+            @Html.DisplayFor(modelItem => modelItem.Address.Address1)
         </dd>
 
     </dl>

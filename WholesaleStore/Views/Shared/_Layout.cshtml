@@ -24,9 +24,10 @@
                     <li class="dropdown">
                         <a href="#" data-toggle="dropdown" class="dropdown-toggle">Tables<b class="caret"></b></a>
                         <ul class="dropdown-menu">
-                            <li>
-                                @Html.ActionLink("Supplier", "Index", "Supplier")
-                            </li>
+                            <li>@Html.ActionLink("Brands", "Index", "Brand")</li>
+                            <li>@Html.ActionLink("Cities", "Index", "City")</li>
+                            <li>@Html.ActionLink("Countries", "Index", "Country")</li>
+                            <li>@Html.ActionLink("Suppliers", "Index", "Supplier")</li>
                         </ul>
                     </li>
                     <li>@Html.ActionLink("About", "About", "Home")</li>
