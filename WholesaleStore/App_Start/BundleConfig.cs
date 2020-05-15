@@ -21,6 +21,9 @@ namespace WholesaleStore
             bundles.Add(new ScriptBundle("~/bundles/addressDropdown").Include(
                       "~/Scripts/addressDropdown.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/cityDropdown").Include(
+                      "~/Scripts/cityDropdown.js"));
+
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/site.css"));

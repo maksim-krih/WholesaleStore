@@ -10,7 +10,7 @@ namespace WholesaleStore
     {
         public static void RegisterComponents()
         {
-			var container = new UnityContainer();
+            var container = new UnityContainer();
 
             container.RegisterType<IGridManager, GridManager>();
             container.RegisterType<IDataExecutor, DataExecutor>();

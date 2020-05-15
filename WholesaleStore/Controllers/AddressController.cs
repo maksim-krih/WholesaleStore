@@ -1,13 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using System.Web.Mvc;
 using WholesaleStore.Controllers.Base;
 using WholesaleStore.Data.Interfaces;
-using WholesaleStore.Models.Dtos;
 
 namespace WholesaleStore.Controllers
 {

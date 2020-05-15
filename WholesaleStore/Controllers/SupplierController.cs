@@ -78,6 +78,8 @@ namespace WholesaleStore.Controllers
                 return RedirectToAction("Index");
             }
 
+            AddressHelper.ConfigureDto(_dataBaseManager, supplierDto);
+
             return View(supplierDto);
         }
 
@@ -104,7 +106,7 @@ namespace WholesaleStore.Controllers
                 ContactPhone = supplier.ContactPhone,
                 CountryId = supplier.Address.City.Region.CountryId,
                 Id = supplier.Id,
-                RegionId = supplier.Address.City.RegionId                
+                RegionId = supplier.Address.City.RegionId
             };
 
             AddressHelper.ConfigureDto(_dataBaseManager, supplierDto);
@@ -130,7 +132,7 @@ namespace WholesaleStore.Controllers
 
                 return RedirectToAction("Index");
             }
-            
+
             AddressHelper.ConfigureDto(_dataBaseManager, supplier);
 
             return View(supplier);
@@ -142,14 +144,14 @@ namespace WholesaleStore.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            
+
             var supplier = await _dataExecutor.FirstOrDefaultAsync(_dataBaseManager.SupplierRepository.Query, x => x.Id == id);
 
             if (supplier == null)
             {
                 return HttpNotFound();
             }
-            
+
             return View(supplier);
         }
 
@@ -172,7 +174,7 @@ namespace WholesaleStore.Controllers
             {
                 _dataBaseManager.Dispose();
             }
-            
+
             base.Dispose(disposing);
         }
     }

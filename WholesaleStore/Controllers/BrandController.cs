@@ -20,7 +20,7 @@ namespace WholesaleStore.Controllers
         public async Task<ActionResult> Index()
         {
             var brands = await _dataExecutor.ToListAsync(_dataBaseManager.BrandRepository.Query.Include(b => b.Country));
-            
+
             return View(brands);
         }
 
@@ -37,7 +37,7 @@ namespace WholesaleStore.Controllers
             {
                 return HttpNotFound();
             }
-            
+
             return View(brand);
         }
 
@@ -60,7 +60,7 @@ namespace WholesaleStore.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.CountryId = new SelectList(_dataBaseManager.CountryRepository.Query, "Id", "Name");
+            ViewBag.CountryId = new SelectList(_dataBaseManager.CountryRepository.Query, "Id", "Name", brand.CountryId);
 
             return View(brand);
         }
@@ -78,9 +78,9 @@ namespace WholesaleStore.Controllers
             {
                 return HttpNotFound();
             }
-            
+
             ViewBag.CountryId = new SelectList(_dataBaseManager.CountryRepository.Query, "Id", "Name", brand.CountryId);
-            
+
             return View(brand);
         }
 
@@ -105,14 +105,14 @@ namespace WholesaleStore.Controllers
 
             return View(brand);
         }
-        
+
         public async Task<ActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            
+
             var brand = await _dataExecutor.FirstOrDefaultAsync(_dataBaseManager.BrandRepository.Query, x => x.Id == id);
 
             if (brand == null)

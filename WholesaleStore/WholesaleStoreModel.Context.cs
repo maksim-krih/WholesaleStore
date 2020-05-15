@@ -1,15 +1,14 @@
 ﻿namespace WholesaleStore
 {
     using System.Data.Entity;
-    using System.Data.Entity.Infrastructure;
-    
+
     public partial class WholesaleStoreContext : DbContext
     {
         public WholesaleStoreContext()
             : base("name=WholesaleStoreContext")
         {
         }
-    
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
