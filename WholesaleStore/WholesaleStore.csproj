@@ -165,8 +165,11 @@
     <Compile Include="Controllers\EmployeeController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\AddressController.cs" />
+    <Compile Include="Controllers\OrderContentController.cs" />
+    <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\PositionController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
+    <Compile Include="Controllers\ProductsInStorageController.cs" />
     <Compile Include="Controllers\ProductTypeController.cs" />
     <Compile Include="Controllers\RegionController.cs" />
     <Compile Include="Controllers\StorageController.cs" />
@@ -192,6 +195,8 @@
     <Compile Include="Models\Dtos\AddressDto.cs" />
     <Compile Include="Models\Dtos\CityDto.cs" />
     <Compile Include="Models\Dtos\EmployeeDto.cs" />
+    <Compile Include="Models\Dtos\OrderDto.cs" />
+    <Compile Include="Models\Dtos\StorageDto.cs" />
     <Compile Include="Models\Dtos\SupplierDto.cs" />
     <Compile Include="Order.cs">
       <DependentUpon>WholesaleStoreModel.tt</DependentUpon>
@@ -363,10 +368,23 @@
     <Content Include="Views\Storage\Details.cshtml" />
     <Content Include="Views\Storage\Edit.cshtml" />
     <Content Include="Views\Storage\Index.cshtml" />
+    <Content Include="Views\ProductsInStorage\Create.cshtml" />
+    <Content Include="Views\ProductsInStorage\Delete.cshtml" />
+    <Content Include="Views\ProductsInStorage\Details.cshtml" />
+    <Content Include="Views\ProductsInStorage\Edit.cshtml" />
+    <Content Include="Views\ProductsInStorage\Index.cshtml" />
+    <Content Include="Views\Order\Create.cshtml" />
+    <Content Include="Views\Order\Delete.cshtml" />
+    <Content Include="Views\Order\Details.cshtml" />
+    <Content Include="Views\Order\Edit.cshtml" />
+    <Content Include="Views\Order\Index.cshtml" />
+    <Content Include="Views\OrderContent\Create.cshtml" />
+    <Content Include="Views\OrderContent\Delete.cshtml" />
+    <Content Include="Views\OrderContent\Details.cshtml" />
+    <Content Include="Views\OrderContent\Edit.cshtml" />
+    <Content Include="Views\OrderContent\Index.cshtml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Views\Base\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

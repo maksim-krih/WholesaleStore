@@ -36,7 +36,7 @@ namespace WholesaleStore.Controllers
             {
                 return HttpNotFound();
             }
-            
+
             return View(client);
         }
 
@@ -47,7 +47,7 @@ namespace WholesaleStore.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "FirstName,LastName,Email,Phone")] Client client)
+        public async Task<ActionResult> Create(Client client)
         {
             if (ModelState.IsValid)
             {
@@ -66,20 +66,20 @@ namespace WholesaleStore.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            
+
             var client = await _dataExecutor.FirstOrDefaultAsync(_dataBaseManager.ClientRepository.Query, x => x.Id == id);
 
             if (client == null)
             {
                 return HttpNotFound();
             }
-            
+
             return View(client);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "Id,FirstName,LastName,Email,Phone")] Client client)
+        public async Task<ActionResult> Edit(Client client)
         {
             if (ModelState.IsValid)
             {
@@ -110,7 +110,7 @@ namespace WholesaleStore.Controllers
             if (client == null)
             {
                 return HttpNotFound();
-            
+
             }
             return View(client);
         }

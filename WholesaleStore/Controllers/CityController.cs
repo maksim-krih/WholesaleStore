@@ -25,7 +25,7 @@ namespace WholesaleStore.Controllers
 
             return View(cities);
         }
-        
+
         public async Task<ActionResult> Details(int? id)
         {
             if (id == null)
@@ -37,12 +37,12 @@ namespace WholesaleStore.Controllers
                 _dataBaseManager.CityRepository.Query
                 .Include(x => x.Region.Country),
                 x => x.Id == id);
-            
+
             if (city == null)
             {
                 return HttpNotFound();
             }
-            
+
             return View(city);
         }
 
@@ -57,7 +57,7 @@ namespace WholesaleStore.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "Name,RegionId")] CityDto cityDto)
+        public async Task<ActionResult> Create(CityDto cityDto)
         {
             if (ModelState.IsValid)
             {
@@ -84,7 +84,7 @@ namespace WholesaleStore.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            
+
             var city = await _dataExecutor.FirstOrDefaultAsync(_dataBaseManager.CityRepository.Query.Include(x => x.Region), x => x.Id == id);
 
             if (city == null)
@@ -101,13 +101,13 @@ namespace WholesaleStore.Controllers
             };
 
             ConfigureDto(cityDto);
-                        
+
             return View(cityDto);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "Id,Name,RegionId")] CityDto city)
+        public async Task<ActionResult> Edit(CityDto city)
         {
             if (ModelState.IsValid)
             {
@@ -134,12 +134,12 @@ namespace WholesaleStore.Controllers
             }
 
             var city = await _dataExecutor.FirstOrDefaultAsync(_dataBaseManager.CityRepository.Query, x => x.Id == id);
-            
+
             if (city == null)
             {
                 return HttpNotFound();
             }
-            
+
             return View(city);
         }
 

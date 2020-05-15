@@ -54,7 +54,7 @@ namespace WholesaleStore.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "Code,ProductTypeId,BrandId,Name,Description,AmountInPackage,PackagePrice")] Product product)
+        public async Task<ActionResult> Create(Product product)
         {
             if (ModelState.IsValid)
             {
@@ -93,12 +93,12 @@ namespace WholesaleStore.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "Id,Code,ProductTypeId,BrandId,Name,Description,AmountInPackage,PackagePrice")] Product product)
+        public async Task<ActionResult> Edit(Product product)
         {
             if (ModelState.IsValid)
             {
                 var entity = await _dataExecutor.FirstOrDefaultAsync(_dataBaseManager.ProductRepository.Query, x => x.Id == product.Id);
-                
+
                 entity.Code = product.Code;
                 entity.ProductTypeId = product.ProductTypeId;
                 entity.BrandId = product.BrandId;
@@ -108,7 +108,7 @@ namespace WholesaleStore.Controllers
                 entity.PackagePrice = product.PackagePrice;
 
                 await _dataBaseManager.ProductRepository.CommitAsync();
-                
+
                 return RedirectToAction("Index");
             }
 

@@ -50,7 +50,7 @@ namespace WholesaleStore.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "Name,Description,CountryId")] Brand brand)
+        public async Task<ActionResult> Create(Brand brand)
         {
             if (ModelState.IsValid)
             {
@@ -86,7 +86,7 @@ namespace WholesaleStore.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "Id,Name,Description,CountryId")] Brand brand)
+        public async Task<ActionResult> Edit(Brand brand)
         {
             if (ModelState.IsValid)
             {

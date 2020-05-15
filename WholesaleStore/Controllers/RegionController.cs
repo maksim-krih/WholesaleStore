@@ -32,27 +32,27 @@ namespace WholesaleStore.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            
+
             var region = await _dataExecutor.FirstOrDefaultAsync(_dataBaseManager.RegionRepository.Query, x => x.Id == id);
 
             if (region == null)
             {
                 return HttpNotFound();
             }
-            
+
             return View(region);
         }
 
         public ActionResult Create()
         {
             ViewBag.CountryId = new SelectList(_dataBaseManager.CountryRepository.Query, "Id", "Name");
-            
+
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "Name,CountryId")] Region region)
+        public async Task<ActionResult> Create(Region region)
         {
             if (ModelState.IsValid)
             {
@@ -73,22 +73,22 @@ namespace WholesaleStore.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            
+
             var region = await _dataExecutor.FirstOrDefaultAsync(_dataBaseManager.RegionRepository.Query, x => x.Id == id);
 
             if (region == null)
             {
                 return HttpNotFound();
             }
-            
+
             ViewBag.CountryId = new SelectList(_dataBaseManager.CountryRepository.Query, "Id", "Name", region.CountryId);
-            
+
             return View(region);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "Id,Name,CountryId")] Region region)
+        public async Task<ActionResult> Edit(Region region)
         {
             if (ModelState.IsValid)
             {
@@ -101,9 +101,9 @@ namespace WholesaleStore.Controllers
 
                 return RedirectToAction("Index");
             }
-            
+
             ViewBag.CountryId = new SelectList(_dataBaseManager.CountryRepository.Query, "Id", "Name", region.CountryId);
-            
+
             return View(region);
         }
 
@@ -113,14 +113,14 @@ namespace WholesaleStore.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            
+
             var region = await _dataExecutor.FirstOrDefaultAsync(_dataBaseManager.RegionRepository.Query, x => x.Id == id);
 
             if (region == null)
             {
                 return HttpNotFound();
             }
-            
+
             return View(region);
         }
 
@@ -143,7 +143,7 @@ namespace WholesaleStore.Controllers
             {
                 _dataBaseManager.Dispose();
             }
-            
+
             base.Dispose(disposing);
         }
     }

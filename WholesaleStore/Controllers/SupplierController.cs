@@ -56,7 +56,7 @@ namespace WholesaleStore.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "CompanyName,Address,ContactPhone,CityId,ZipCode")] SupplierDto supplierDto)
+        public async Task<ActionResult> Create(SupplierDto supplierDto)
         {
             if (ModelState.IsValid)
             {
@@ -73,7 +73,7 @@ namespace WholesaleStore.Controllers
                 };
 
                 _dataBaseManager.SupplierRepository.Create(supplier);
-                await _dataBaseManager.BrandRepository.CommitAsync();
+                await _dataBaseManager.SupplierRepository.CommitAsync();
 
                 return RedirectToAction("Index");
             }
@@ -116,7 +116,7 @@ namespace WholesaleStore.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "Id,CompanyName,Address,ContactPhone,CityId,ZipCode")] SupplierDto supplier)
+        public async Task<ActionResult> Edit(SupplierDto supplier)
         {
             if (ModelState.IsValid)
             {

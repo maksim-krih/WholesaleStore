@@ -36,7 +36,7 @@ namespace WholesaleStore.Controllers
             {
                 return HttpNotFound();
             }
-            
+
             return View(position);
         }
 
@@ -47,7 +47,7 @@ namespace WholesaleStore.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "Name")] Position position)
+        public async Task<ActionResult> Create(Position position)
         {
             if (ModelState.IsValid)
             {
@@ -68,18 +68,18 @@ namespace WholesaleStore.Controllers
             }
 
             var position = await _dataExecutor.FirstOrDefaultAsync(_dataBaseManager.PositionRepository.Query, x => x.Id == id);
-            
+
             if (position == null)
             {
                 return HttpNotFound();
             }
-            
+
             return View(position);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "Id,Name")] Position position)
+        public async Task<ActionResult> Edit(Position position)
         {
             if (ModelState.IsValid)
             {
@@ -103,12 +103,12 @@ namespace WholesaleStore.Controllers
             }
 
             var position = await _dataExecutor.FirstOrDefaultAsync(_dataBaseManager.PositionRepository.Query, x => x.Id == id);
-            
+
             if (position == null)
             {
                 return HttpNotFound();
             }
-            
+
             return View(position);
         }
 

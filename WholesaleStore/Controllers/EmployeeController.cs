@@ -44,12 +44,12 @@ namespace WholesaleStore.Controllers
                 .Include(x => x.Address.City.Region.Country)
                 .Include(e => e.Position)
                 );
-            
+
             if (employee == null)
             {
                 return HttpNotFound();
             }
-            
+
             return View(employee);
         }
 
@@ -60,13 +60,13 @@ namespace WholesaleStore.Controllers
             AddressHelper.ConfigureDto(_dataBaseManager, employee);
 
             ViewBag.PositionId = new SelectList(db.Positions, "Id", "Name");
-            
+
             return View(employee);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "PositionId,FirstName,LastName,Email,Phone,Address,CityId,ZipCode,Login,Password")] EmployeeDto employeeDto)
+        public async Task<ActionResult> Create(EmployeeDto employeeDto)
         {
             if (ModelState.IsValid)
             {
@@ -95,7 +95,7 @@ namespace WholesaleStore.Controllers
 
             AddressHelper.ConfigureDto(_dataBaseManager, employeeDto);
             ViewBag.PositionId = new SelectList(db.Positions, "Id", "Name", employeeDto.PositionId);
-            
+
             return View(employeeDto);
         }
 
@@ -136,13 +136,13 @@ namespace WholesaleStore.Controllers
 
             AddressHelper.ConfigureDto(_dataBaseManager, employeeDto);
             ViewBag.PositionId = new SelectList(db.Positions, "Id", "Name", employeeDto.PositionId);
-            
+
             return View(employeeDto);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "Id,PositionId,FirstName,LastName,Email,Phone,Address,CityId,ZipCode,Login,Password")] EmployeeDto employee)
+        public async Task<ActionResult> Edit(EmployeeDto employee)
         {
             if (ModelState.IsValid)
             {
@@ -163,7 +163,7 @@ namespace WholesaleStore.Controllers
 
                 return RedirectToAction("Index");
             }
-            
+
             AddressHelper.ConfigureDto(_dataBaseManager, employee);
             ViewBag.PositionId = new SelectList(db.Positions, "Id", "Name", employee.PositionId);
 
@@ -187,7 +187,7 @@ namespace WholesaleStore.Controllers
             {
                 return HttpNotFound();
             }
-            
+
             return View(employee);
         }
 
@@ -210,7 +210,7 @@ namespace WholesaleStore.Controllers
             {
                 _dataBaseManager.Dispose();
             }
-            
+
             base.Dispose(disposing);
         }
     }

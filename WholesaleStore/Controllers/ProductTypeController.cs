@@ -19,7 +19,7 @@ namespace WholesaleStore.Controllers
         public async Task<ActionResult> Index()
         {
             var productTypes = await _dataExecutor.ToListAsync(_dataBaseManager.ProductTypeRepository.Query);
-            
+
             return View(productTypes);
         }
 
@@ -29,14 +29,14 @@ namespace WholesaleStore.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            
+
             var productType = await _dataExecutor.FirstOrDefaultAsync(_dataBaseManager.ProductTypeRepository.Query, x => x.Id == id);
 
             if (productType == null)
             {
                 return HttpNotFound();
             }
-            
+
             return View(productType);
         }
 
@@ -47,7 +47,7 @@ namespace WholesaleStore.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "Name")] ProductType productType)
+        public async Task<ActionResult> Create(ProductType productType)
         {
             if (ModelState.IsValid)
             {
@@ -66,20 +66,20 @@ namespace WholesaleStore.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            
+
             var productType = await _dataExecutor.FirstOrDefaultAsync(_dataBaseManager.ProductTypeRepository.Query, x => x.Id == id);
 
             if (productType == null)
             {
                 return HttpNotFound();
             }
-            
+
             return View(productType);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "Id,Name")] ProductType productType)
+        public async Task<ActionResult> Edit(ProductType productType)
         {
             if (ModelState.IsValid)
             {
@@ -91,7 +91,7 @@ namespace WholesaleStore.Controllers
 
                 return RedirectToAction("Index");
             }
-            
+
             return View(productType);
         }
 
@@ -101,14 +101,14 @@ namespace WholesaleStore.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            
+
             var productType = await _dataExecutor.FirstOrDefaultAsync(_dataBaseManager.ProductTypeRepository.Query, x => x.Id == id);
 
             if (productType == null)
             {
                 return HttpNotFound();
             }
-            
+
             return View(productType);
         }
 
@@ -121,7 +121,7 @@ namespace WholesaleStore.Controllers
             _dataBaseManager.ProductTypeRepository.Remove(productType);
 
             await _dataBaseManager.ProductTypeRepository.CommitAsync();
-                        
+
             return RedirectToAction("Index");
         }
 
@@ -131,7 +131,7 @@ namespace WholesaleStore.Controllers
             {
                 _dataBaseManager.Dispose();
             }
-            
+
             base.Dispose(disposing);
         }
     }
