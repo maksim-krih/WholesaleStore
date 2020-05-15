@@ -15,6 +15,18 @@ $('#CountryId').change(function () {
         $.each(data, function (index, item) {
             regionId.append($('<option></option>').val(item.Value).text(item.Text));
         });
+
+        if (data.length === 1) {
+            $.getJSON(cityUrl, { regionId: data[0].Value }, function (data) {
+                if (!data) {
+                    return;
+                }
+                //localities.append($('<option></option>').val('').text('Please select'));
+                $.each(data, function (index, item) {
+                    cityId.append($('<option></option>').val(item.Value).text(item.Text));
+                });
+            });
+        } 
     });
 })
 

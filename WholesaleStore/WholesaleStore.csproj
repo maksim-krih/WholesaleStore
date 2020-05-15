@@ -160,10 +160,16 @@
     <Compile Include="Controllers\Base\BaseController.cs" />
     <Compile Include="Controllers\BrandController.cs" />
     <Compile Include="Controllers\CityController.cs" />
+    <Compile Include="Controllers\ClientController.cs" />
     <Compile Include="Controllers\CountryController.cs" />
+    <Compile Include="Controllers\EmployeeController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\AddressController.cs" />
+    <Compile Include="Controllers\PositionController.cs" />
+    <Compile Include="Controllers\ProductController.cs" />
+    <Compile Include="Controllers\ProductTypeController.cs" />
     <Compile Include="Controllers\RegionController.cs" />
+    <Compile Include="Controllers\StorageController.cs" />
     <Compile Include="Controllers\SupplierController.cs" />
     <Compile Include="Country.cs">
       <DependentUpon>WholesaleStoreModel.tt</DependentUpon>
@@ -185,6 +191,7 @@
     </Compile>
     <Compile Include="Models\Dtos\AddressDto.cs" />
     <Compile Include="Models\Dtos\CityDto.cs" />
+    <Compile Include="Models\Dtos\EmployeeDto.cs" />
     <Compile Include="Models\Dtos\SupplierDto.cs" />
     <Compile Include="Order.cs">
       <DependentUpon>WholesaleStoreModel.tt</DependentUpon>
@@ -326,6 +333,36 @@
     <Content Include="Views\Region\Details.cshtml" />
     <Content Include="Views\Region\Edit.cshtml" />
     <Content Include="Views\Region\Index.cshtml" />
+    <Content Include="Views\Position\Create.cshtml" />
+    <Content Include="Views\Position\Delete.cshtml" />
+    <Content Include="Views\Position\Details.cshtml" />
+    <Content Include="Views\Position\Edit.cshtml" />
+    <Content Include="Views\Position\Index.cshtml" />
+    <Content Include="Views\ProductType\Create.cshtml" />
+    <Content Include="Views\ProductType\Delete.cshtml" />
+    <Content Include="Views\ProductType\Details.cshtml" />
+    <Content Include="Views\ProductType\Edit.cshtml" />
+    <Content Include="Views\ProductType\Index.cshtml" />
+    <Content Include="Views\Product\Create.cshtml" />
+    <Content Include="Views\Product\Delete.cshtml" />
+    <Content Include="Views\Product\Details.cshtml" />
+    <Content Include="Views\Product\Edit.cshtml" />
+    <Content Include="Views\Product\Index.cshtml" />
+    <Content Include="Views\Client\Create.cshtml" />
+    <Content Include="Views\Client\Delete.cshtml" />
+    <Content Include="Views\Client\Details.cshtml" />
+    <Content Include="Views\Client\Edit.cshtml" />
+    <Content Include="Views\Client\Index.cshtml" />
+    <Content Include="Views\Employee\Create.cshtml" />
+    <Content Include="Views\Employee\Delete.cshtml" />
+    <Content Include="Views\Employee\Details.cshtml" />
+    <Content Include="Views\Employee\Edit.cshtml" />
+    <Content Include="Views\Employee\Index.cshtml" />
+    <Content Include="Views\Storage\Create.cshtml" />
+    <Content Include="Views\Storage\Delete.cshtml" />
+    <Content Include="Views\Storage\Details.cshtml" />
+    <Content Include="Views\Storage\Edit.cshtml" />
+    <Content Include="Views\Storage\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\Base\" />
