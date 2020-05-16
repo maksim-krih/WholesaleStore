@@ -55,6 +55,7 @@ namespace WholesaleStore.Controllers
             if (ModelState.IsValid)
             {
                 _dataBaseManager.BrandRepository.Create(brand);
+
                 await _dataBaseManager.BrandRepository.CommitAsync();
 
                 return RedirectToAction("Index");

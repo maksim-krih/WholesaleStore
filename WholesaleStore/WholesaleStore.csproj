@@ -167,6 +167,8 @@
     <Compile Include="Controllers\AddressController.cs" />
     <Compile Include="Controllers\OrderContentController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
+    <Compile Include="Controllers\OrderDeliveryController.cs" />
+    <Compile Include="Controllers\OrderShipmentController.cs" />
     <Compile Include="Controllers\PositionController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
     <Compile Include="Controllers\ProductsInStorageController.cs" />
@@ -383,6 +385,16 @@
     <Content Include="Views\OrderContent\Details.cshtml" />
     <Content Include="Views\OrderContent\Edit.cshtml" />
     <Content Include="Views\OrderContent\Index.cshtml" />
+    <Content Include="Views\OrderDelivery\Create.cshtml" />
+    <Content Include="Views\OrderDelivery\Delete.cshtml" />
+    <Content Include="Views\OrderDelivery\Details.cshtml" />
+    <Content Include="Views\OrderDelivery\Edit.cshtml" />
+    <Content Include="Views\OrderDelivery\Index.cshtml" />
+    <Content Include="Views\OrderShipment\Create.cshtml" />
+    <Content Include="Views\OrderShipment\Delete.cshtml" />
+    <Content Include="Views\OrderShipment\Details.cshtml" />
+    <Content Include="Views\OrderShipment\Edit.cshtml" />
+    <Content Include="Views\OrderShipment\Index.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
