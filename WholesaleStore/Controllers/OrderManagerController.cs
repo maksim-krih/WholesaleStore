@@ -75,7 +75,17 @@ namespace WholesaleStore.Controllers
             return View(order);
         }
 
+
+
         [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> AddOrderContent(OrderDto orderDto)
+        {
+            orderDto.OrderContents.Add(new OrderContent());
+            ViewBag.ProductId = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "Name");
+            return PartialView("OrderContent", orderDto);
+        }
+
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(OrderDto orderDto)
         {

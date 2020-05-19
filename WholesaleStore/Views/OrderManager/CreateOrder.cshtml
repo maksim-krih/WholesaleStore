@@ -7,7 +7,7 @@
 <h2>Create</h2>
 
 
-@using (Html.BeginForm())
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "form" }))
 {
     @Html.AntiForgeryToken()
 
@@ -78,30 +78,28 @@
                 @Html.ValidationMessageFor(model => model.ZipCode, "", new { @class = "text-danger" })
             </div>
         </div>
-        @for (int i = 0; i < Model.OrderContents.Count(); i++)
-        {
+        <div id="orderContentContainer">
             <div class="form-group">
-                <div class="row">
-                    @Html.LabelFor(model => model.OrderContents[i].Product, "Product", htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        @Html.DropDownListFor(model => model.OrderContents[i].ProductId, (IEnumerable<SelectListItem>)ViewBag.ProductId, htmlAttributes: new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.OrderContents[i].ProductId, "", new { @class = "text-danger" })
+                <div class="row" style="margin-left:0;margin-right:0;">
+                    @Html.LabelFor(model => Model.OrderContents[Model.OrderContents.Count - 1].Product, "Product", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-3">
+                        @Html.DropDownListFor(model => Model.OrderContents[Model.OrderContents.Count - 1].ProductId, (IEnumerable<SelectListItem>)ViewBag.ProductId, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => Model.OrderContents[Model.OrderContents.Count - 1].ProductId, "", new { @class = "text-danger" })
                     </div>
-                    @Html.LabelFor(model => model.OrderContents[i].Count, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        @Html.EditorFor(model => model.OrderContents[i].Count, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.OrderContents[i].Count, "", new { @class = "text-danger" })
+                    @Html.LabelFor(model => Model.OrderContents[Model.OrderContents.Count - 1].Count, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-2">
+                        @Html.EditorFor(model => Model.OrderContents[Model.OrderContents.Count - 1].Count, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => Model.OrderContents[Model.OrderContents.Count - 1].Count, "", new { @class = "text-danger" })
                     </div>
                 </div>
             </div>
-        }
-
+        </div>
         <div class="form-group">
-            <div class="row">
-                <div class="col-md-offset-2 col-md-10 mb-2">
+            <div class="row" style="margin-left:0;margin-right:0;">
+                <div class="col-md-offset-2 col-md-2" s>
                     <input type="button" value="Add Product" id="btnAdd" class="btn btn-default" />
                 </div>
-                <div class="col-md-offset-2 col-md-10">
+                <div class="col-md-2">
                     <input type="submit" value="Create" class="btn btn-default" />
                 </div>
             </div>
@@ -116,4 +114,17 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/addressDropdown")
+    <script type="text/javascript">
+        $("#btnAdd").on('click', function () {
+            $.ajax({
+                async: true,
+                data: $('#form').serialize(),
+                type: "POST",
+                url: '/OrderManager/AddOrderContent',
+                success: function (partialView) {
+                    $('#orderContentContainer').html(partialView)
+                }
+            });
+        });
+    </script>
 }

@@ -453,6 +453,7 @@
     <Content Include="Views\OrderManager\Details.cshtml" />
     <Content Include="Views\OrderManager\Edit.cshtml" />
     <Content Include="Views\OrderManager\Order.cshtml" />
+    <Content Include="Views\OrderManager\OrderContent.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
