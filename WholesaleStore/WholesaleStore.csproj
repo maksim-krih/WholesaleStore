@@ -183,6 +183,7 @@
     <Compile Include="Client.cs">
       <DependentUpon>WholesaleStoreModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Common\Enums\OrderStatus.cs" />
     <Compile Include="Common\GridSortItem.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\Base\BaseController.cs" />
@@ -196,6 +197,7 @@
     <Compile Include="Controllers\OrderContentController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\OrderDeliveryController.cs" />
+    <Compile Include="Controllers\OrderManagerController.cs" />
     <Compile Include="Controllers\OrderShipmentController.cs" />
     <Compile Include="Controllers\PositionController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
@@ -277,6 +279,7 @@
       <DependentUpon>WholesaleStoreModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Utils\AddressHelper.cs" />
+    <Compile Include="Utils\OrderStatusDescription.cs" />
     <Compile Include="WholesaleStoreModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -340,7 +343,6 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
-    <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <EntityDeploy Include="WholesaleStoreModel.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
@@ -446,6 +448,11 @@
     <Content Include="Views\Supply\Index.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
+    <Content Include="Views\OrderManager\CreateOrder.cshtml" />
+    <Content Include="Views\OrderManager\Delete.cshtml" />
+    <Content Include="Views\OrderManager\Details.cshtml" />
+    <Content Include="Views\OrderManager\Edit.cshtml" />
+    <Content Include="Views\OrderManager\Order.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

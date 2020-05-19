@@ -9,7 +9,7 @@
         @Html.AntiForgeryToken()
         <ul class="nav navbar-nav navbar-right">
             <li>
-                <a title="Manage">Hello, @claimsIdentity.FindFirst(System.Security.Claims.ClaimTypes.Name).Value</a>
+                <a>Hello, @claimsIdentity.FindFirst(System.Security.Claims.ClaimTypes.Name).Value</a>
             </li>
             <li>
                 <button type="submit" class="btn btn-link navbar-btn navbar-link" id="logoutButton">Log out</button>

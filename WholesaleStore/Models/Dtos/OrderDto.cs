@@ -1,4 +1,6 @@
-﻿namespace WholesaleStore.Models.Dtos
+﻿using System.Collections.Generic;
+
+namespace WholesaleStore.Models.Dtos
 {
     public class OrderDto : AddressDto
     {
@@ -9,5 +11,6 @@
         public System.DateTime Date { get; set; }
         public int TotalPrice { get; set; }
         public int Status { get; set; }
+        public List<OrderContent> OrderContents { get; set; }
     }
 }
