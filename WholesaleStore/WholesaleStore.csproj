@@ -183,6 +183,7 @@
     <Compile Include="Client.cs">
       <DependentUpon>WholesaleStoreModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Common\Enums\SupplyStatus.cs" />
     <Compile Include="Common\Enums\OrderStatus.cs" />
     <Compile Include="Common\GridSortItem.cs" />
     <Compile Include="Controllers\AccountController.cs" />
@@ -208,6 +209,7 @@
     <Compile Include="Controllers\SupplierController.cs" />
     <Compile Include="Controllers\SupplyContentController.cs" />
     <Compile Include="Controllers\SupplyController.cs" />
+    <Compile Include="Controllers\SupplyManagerController.cs" />
     <Compile Include="Controllers\SupplyShipmentController.cs" />
     <Compile Include="Country.cs">
       <DependentUpon>WholesaleStoreModel.tt</DependentUpon>
@@ -279,6 +281,7 @@
       <DependentUpon>WholesaleStoreModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Utils\AddressHelper.cs" />
+    <Compile Include="Utils\SupplyStatusDescription.cs" />
     <Compile Include="Utils\OrderStatusDescription.cs" />
     <Compile Include="WholesaleStoreModel.Context.cs">
       <AutoGen>True</AutoGen>
@@ -454,6 +457,11 @@
     <Content Include="Views\OrderManager\Edit.cshtml" />
     <Content Include="Views\OrderManager\Order.cshtml" />
     <Content Include="Views\OrderManager\OrderContent.cshtml" />
+    <Content Include="Views\SupplyManager\Create.cshtml" />
+    <Content Include="Views\SupplyManager\Delete.cshtml" />
+    <Content Include="Views\SupplyManager\Details.cshtml" />
+    <Content Include="Views\SupplyManager\Edit.cshtml" />
+    <Content Include="Views\SupplyManager\Supply.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

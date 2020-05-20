@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using WholesaleStore.Common.Enums;
 using WholesaleStore.Controllers.Base;
 using WholesaleStore.Data.Interfaces;
 using WholesaleStore.Models.Dtos;
@@ -66,52 +69,59 @@ namespace WholesaleStore.Controllers
                 new OrderContent { Count = 0, ProductId = 0 }
             };
 
+            order.ProductList = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "Name");
+
             AddressHelper.ConfigureDto(_dataBaseManager, order);
 
-            ViewBag.ProductId = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "Name");
             ViewBag.ClientId = new SelectList(_dataBaseManager.ClientRepository.Query, "Id", "FirstName");
             ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FirstName");
 
             return View(order);
         }
 
-
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> AddOrderContent(OrderDto orderDto)
+        public ActionResult AddOrderContent(OrderDto orderDto)
         {
             orderDto.OrderContents.Add(new OrderContent());
-            ViewBag.ProductId = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "Name");
+            orderDto.ProductList = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "Name");
+
             return PartialView("OrderContent", orderDto);
         }
 
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(OrderDto orderDto)
         {
             if (ModelState.IsValid)
             {
+                var products = await _dataExecutor.ToListAsync(_dataBaseManager.ProductRepository.Query);
+                
                 var order = new Order
                 {
                     Number = orderDto.Number,
                     EmployeeId = orderDto.EmployeeId,
                     ClientId = orderDto.ClientId,
-                    Date = orderDto.Date,
-                    TotalPrice = orderDto.TotalPrice,
-                    Status = orderDto.Status,
+                    Date = DateTime.Now,
+                    TotalPrice = orderDto.OrderContents.Sum(x => x.Count * products.Find(p => p.Id == x.ProductId).PackagePrice),
+                    Status = (int)OrderStatus.Preparing,
                     Address = new Address
                     {
                         Address1 = orderDto.Address,
                         CityId = orderDto.CityId.Value,
                         ZipCode = orderDto.ZipCode
-                    }
+                    },
+                    OrderContents = orderDto.OrderContents
+
                 };
 
                 _dataBaseManager.OrderRepository.Create(order);
                 await _dataBaseManager.OrderRepository.CommitAsync();
 
-                return RedirectToAction("Index");
+                return RedirectToAction("Order");
             }
+
+            orderDto.ProductList = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "Name");
 
             AddressHelper.ConfigureDto(_dataBaseManager, orderDto);
 
@@ -191,7 +201,7 @@ namespace WholesaleStore.Controllers
 
                 await _dataBaseManager.OrderRepository.CommitAsync();
 
-                return RedirectToAction("Index");
+                return RedirectToAction("Order");
             }
 
             AddressHelper.ConfigureDto(_dataBaseManager, order);
@@ -241,7 +251,7 @@ namespace WholesaleStore.Controllers
 
             await _dataBaseManager.OrderRepository.CommitAsync();
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Order");
         }
 
         protected override void Dispose(bool disposing)

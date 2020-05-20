@@ -1,15 +1,15 @@
 ﻿@model WholesaleStore.Models.Dtos.OrderDto
 <div class="form-group">
     <div class="row" style="margin-left:0;margin-right:0;">
-        @Html.LabelFor(model => Model.OrderContents[Model.OrderContents.Count - 1].Product, "Product", htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.LabelFor(model => model.OrderContents[Model.OrderContents.Count - 1].Product, "Product", htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-3">
-            @Html.DropDownListFor(model => Model.OrderContents[Model.OrderContents.Count - 1].ProductId, (IEnumerable<SelectListItem>)ViewBag.ProductId, htmlAttributes: new { @class = "form-control" })
-            @Html.ValidationMessageFor(model => Model.OrderContents[Model.OrderContents.Count - 1].ProductId, "", new { @class = "text-danger" })
+            @Html.DropDownListFor(model => model.OrderContents[Model.OrderContents.Count - 1].ProductId, Model.ProductList, htmlAttributes: new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.OrderContents[Model.OrderContents.Count - 1].ProductId, "", new { @class = "text-danger" })
         </div>
         @Html.LabelFor(model => Model.OrderContents[Model.OrderContents.Count - 1].Count, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-2">
-            @Html.EditorFor(model => Model.OrderContents[Model.OrderContents.Count - 1].Count, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => Model.OrderContents[Model.OrderContents.Count - 1].Count, "", new { @class = "text-danger" })
+            @Html.EditorFor(model => model.OrderContents[Model.OrderContents.Count - 1].Count, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.OrderContents[Model.OrderContents.Count - 1].Count, "", new { @class = "text-danger" })
         </div>
     </div>
 </div>

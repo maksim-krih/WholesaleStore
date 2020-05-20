@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Web.Mvc;
 
 namespace WholesaleStore.Models.Dtos
 {
@@ -12,5 +13,6 @@ namespace WholesaleStore.Models.Dtos
         public int TotalPrice { get; set; }
         public int Status { get; set; }
         public List<OrderContent> OrderContents { get; set; }
+        public SelectList ProductList { get; set; }
     }
 }
