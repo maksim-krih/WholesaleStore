@@ -61,6 +61,7 @@ namespace WholesaleStore.Controllers
 
             return View(model);
         }
+
         public ActionResult Logout()
         {
             AuthenticationManager.SignOut();

@@ -1,6 +1,6 @@
 ﻿@using WholesaleStore.Common.Enums
 @using WholesaleStore.Utils
-@model IEnumerable<WholesaleStore.Order>
+@model IEnumerable<WholesaleStore.Supply>
 
 @{
     ViewBag.Title = "Index";
@@ -9,7 +9,7 @@
 <h2>Index</h2>
 
 <p>
-    @Html.ActionLink("Create New", "CreateOrder")
+    @Html.ActionLink("Create New", "Create")
 </p>
 <table class="table table-hover">
     <tr>
@@ -20,19 +20,13 @@
             @Html.DisplayNameFor(model => model.Employee)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Client)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Address)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Date)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.TotalPrice)
+            @Html.DisplayNameFor(model => model.Supplier)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Status)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Date)
         </th>
         <th></th>
     </tr>
@@ -48,32 +42,16 @@
                 @item.Employee.LastName
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Client.FirstName)
-                @Html.DisplayFor(modelItem => item.Client.LastName)
+                @item.Supplier.CompanyName
             </td>
             <td>
-                @if (item.Address != null)
-                {
-                    <div>
-                        @item.Address.ZipCode,
-                        @item.Address.City.Region.Country.Name,
-                        @item.Address.City.Region.Name,
-                        @item.Address.City.Name,
-                        @item.Address.Address1
-                    </div>
-                }
+                @(((SupplyStatus)item.Status).GetDescription())
             </td>
             <td>
                 @item.Date
             </td>
             <td>
-                @item.TotalPrice
-            </td>
-            <td>
-                @(((OrderStatus)item.Status).GetDescription())
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                @Html.ActionLink("Shipment", "EditShipment", new { id = item.Id }) |
                 @Html.ActionLink("Delete", "Delete", new { id = item.Id })
             </td>
         </tr>
@@ -85,18 +63,18 @@
                             Product
                         </th>
                         <th>
-                            Count
+                            Storage Number
                         </th>
                     </tr>
 
-                    @foreach (var orderContent in item.OrderContents)
+                    @foreach (var supplyContent in item.SupplyContents)
                     {
                         <tr>
                             <td>
-                                @orderContent.Product.Name
+                                @supplyContent.Product.Name
                             </td>
                             <td>
-                                @orderContent.Count
+                                @(supplyContent.SupplyShipments.FirstOrDefault()?.ProductsInStorage.Storage.Number)
                             </td>
                         </tr>
                     }
@@ -104,4 +82,5 @@
             </td>
         </tr>
     }
+
 </table>

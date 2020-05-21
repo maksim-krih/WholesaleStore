@@ -1,0 +1,93 @@
+﻿@model WholesaleStore.Models.Dtos.SupplyDto
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create</h2>
+
+
+@using (Html.BeginForm("Create", "SupplyManager", FormMethod.Post, new { id = "form" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Supply</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Number, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Number, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Number, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.EmployeeId, "EmployeeId", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("EmployeeId", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.EmployeeId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.SupplierId, "SupplierId", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("SupplierId", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.SupplierId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div id="supplyContentContainer">
+            @for (var i = 0; i < Model.SupplyContents.Count; i++)
+            {
+                <div class="form-group">
+                    <div class="row" style="margin-left:0;margin-right:0;">
+                        @Html.LabelFor(model => model.SupplyContents[i].Product, "Product", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-3">
+                            @Html.DropDownListFor(model => model.SupplyContents[i].ProductId, Model.ProductList, htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.SupplyContents[i].ProductId, "", new { @class = "text-danger" })
+                        </div>
+                        @Html.LabelFor(model => Model.SupplyContents[i].Count, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-2">
+                            @Html.EditorFor(model => Model.SupplyContents[i].Count, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.SupplyContents[i].Count, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="form-group">
+            <div class="row" style="margin-left:0;margin-right:0;">
+                <div class="col-md-offset-2 col-md-2" s>
+                    <input type="button" value="Add Product" id="btnAdd" class="btn btn-default" />
+                </div>
+                <div class="col-md-2">
+                    <input type="submit" value="Create" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        $("#btnAdd").on('click', function () {
+            $.ajax({
+                async: true,
+                data: $('#form').serialize(),
+                type: "POST",
+                url: '/SupplyManager/AddSupplyContent',
+                success: function (partialView) {
+                    $('#supplyContentContainer').append(partialView)
+                }
+            });
+        });
+    </script>
+}

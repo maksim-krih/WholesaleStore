@@ -117,7 +117,7 @@ namespace WholesaleStore.Controllers
                 entity.SupplierId = supply.SupplierId;
                 entity.Status = supply.Status;
 
-                await _dataBaseManager.BrandRepository.CommitAsync();
+                await _dataBaseManager.SupplyRepository.CommitAsync();
 
                 return RedirectToAction("Index");
             }

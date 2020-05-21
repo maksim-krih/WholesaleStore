@@ -1,9 +1,15 @@
-﻿using System.Data.Entity;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
+using System.Linq.Dynamic;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using WholesaleStore.Common.Enums;
 using WholesaleStore.Controllers.Base;
 using WholesaleStore.Data.Interfaces;
+using WholesaleStore.Models.Dtos;
 
 namespace WholesaleStore.Controllers
 {
@@ -22,7 +28,22 @@ namespace WholesaleStore.Controllers
             var supplies = await _dataExecutor.ToListAsync(
                 _dataBaseManager.SupplyRepository.Query
                 .Include(s => s.Employee)
-                .Include(s => s.Supplier));
+                .Include(s => s.Supplier)
+                .Include($"{nameof(WholesaleStore.Supply.SupplyContents)}.{nameof(SupplyContent.Product)}")
+                );
+
+            return View(supplies);
+        }
+
+        public async Task<ActionResult> Shipment()
+        {
+            var supplies = await _dataExecutor.ToListAsync(
+                _dataBaseManager.SupplyRepository.Query
+                .Include(s => s.Employee)
+                .Include(s => s.Supplier)
+                .Include($"{nameof(WholesaleStore.Supply.SupplyContents)}.{nameof(SupplyContent.Product)}")
+                .Include($"{nameof(WholesaleStore.Supply.SupplyContents)}.{nameof(SupplyContent.SupplyShipments)}")
+                );
 
             return View(supplies);
         }
@@ -48,20 +69,53 @@ namespace WholesaleStore.Controllers
             return View(supply);
         }
 
-        public ActionResult Create()
+        public ActionResult CreateSupply()
         {
+            var supply = new SupplyDto();
+
+            supply.SupplyContents = new List<SupplyContentDto>
+            {
+                new SupplyContentDto { Count = 0, ProductId = 0 }
+            };
+
+            supply.ProductList = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "Name");
+
             ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FirstName");
             ViewBag.SupplierId = new SelectList(_dataBaseManager.SupplierRepository.Query, "Id", "CompanyName");
 
-            return View();
+            return View(supply);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(Supply supply)
+        public ActionResult AddSupplyContent(SupplyDto supplyDto)
+        {
+            supplyDto.SupplyContents.Add(new SupplyContentDto());
+            supplyDto.ProductList = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "Name");
+
+            return PartialView("SupplyContent", supplyDto);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Create(SupplyDto supplyDto)
         {
             if (ModelState.IsValid)
             {
+                var supply = new Supply
+                {
+                    Number = supplyDto.Number,
+                    EmployeeId = supplyDto.EmployeeId,
+                    SupplierId = supplyDto.SupplierId,
+                    Date = DateTime.Now,
+                    Status = (int)SupplyStatus.WaitingForShipment,
+                    SupplyContents = supplyDto.SupplyContents.Select(x => new SupplyContent
+                    {
+                        ProductId = x.ProductId,
+                        Count = x.Count
+                    }).ToList()
+                };
+
                 _dataBaseManager.SupplyRepository.Create(supply);
 
                 await _dataBaseManager.SupplyRepository.CommitAsync();
@@ -69,13 +123,15 @@ namespace WholesaleStore.Controllers
                 return RedirectToAction("Supply");
             }
 
-            ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FirstName", supply.EmployeeId);
-            ViewBag.SupplierId = new SelectList(_dataBaseManager.SupplierRepository.Query, "Id", "CompanyName", supply.SupplierId);
+            supplyDto.ProductList = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "Name");
 
-            return View(supply);
+            ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FirstName", supplyDto.EmployeeId);
+            ViewBag.SupplierId = new SelectList(_dataBaseManager.SupplierRepository.Query, "Id", "CompanyName", supplyDto.SupplierId);
+
+            return View(supplyDto);
         }
 
-        public async Task<ActionResult> Edit(int? id)
+        public async Task<ActionResult> EditShipment(int? id)
         {
             if (id == null)
             {
@@ -93,15 +149,37 @@ namespace WholesaleStore.Controllers
                 return HttpNotFound();
             }
 
-            ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FirstName", supply.EmployeeId);
-            ViewBag.SupplierId = new SelectList(_dataBaseManager.SupplierRepository.Query, "Id", "CompanyName", supply.SupplierId);
+            var supplyShipmentDto = new List<SupplyShipmentDto>();
 
-            return View(supply);
+            for (var i = 0; i < supply.SupplyContents.Count; i++)
+            {
+                supplyShipmentDto.Add(new SupplyShipmentDto
+                {
+                    ProductsInStorage = new ProductsInStorage()
+                });
+            }
+
+            var supplyDto = new SupplyDto
+            {
+                Id = supply.Id,
+                SupplyContents = supply.SupplyContents.Select(x => new SupplyContentDto
+                {
+                    Count = x.Count,
+                    Product = x.Product,
+                    SupplyShipments = supplyShipmentDto
+                }).ToList()
+            };
+
+            supplyDto.ProductList = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "Name");
+            supplyDto.EmployeeList = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FirstName");
+            supplyDto.StorageList = new SelectList(_dataBaseManager.StorageRepository.Query, "Id", "Number");
+
+            return View(supplyDto);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Supply supply)
+        public async Task<ActionResult> EditShipment(SupplyDto supply)
         {
             if (ModelState.IsValid)
             {
@@ -111,19 +189,32 @@ namespace WholesaleStore.Controllers
                     .Include(s => s.Supplier),
                     x => x.Id == supply.Id);
 
-                entity.Number = supply.Number;
-                entity.Date = supply.Date;
-                entity.EmployeeId = supply.EmployeeId;
-                entity.SupplierId = supply.SupplierId;
-                entity.Status = supply.Status;
+                var supplyContents = entity.SupplyContents.ToList();
 
-                await _dataBaseManager.BrandRepository.CommitAsync();
+                for (var i = 0; i < entity.SupplyContents.Count; i++)
+                {
+                    var supplyShipmentDto = supply.SupplyContents[i].SupplyShipments[0];
+                    supplyContents[i].SupplyShipments.Add(new SupplyShipment
+                    {
+                        EmployeeId = supplyShipmentDto.EmployeeId,
+                        ProductsInStorage = new ProductsInStorage 
+                        { 
+                            StorageId = supplyShipmentDto.ProductsInStorage.StorageId,
+                            ProductId = supplyContents[0].ProductId
+                        }, 
+                        Count = supplyContents[i].Count,
+                        Date = DateTime.Now
+                    });
+                }
 
-                return RedirectToAction("Supply");
+                await _dataBaseManager.SupplyRepository.CommitAsync();
+
+                return RedirectToAction("Shipment");
             }
 
-            ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FirstName", supply.EmployeeId);
-            ViewBag.SupplierId = new SelectList(_dataBaseManager.SupplierRepository.Query, "Id", "CompanyName", supply.SupplierId);
+            supply.ProductList = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "Name");
+            supply.EmployeeList = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FirstName");
+            supply.StorageList = new SelectList(_dataBaseManager.StorageRepository.Query, "Id", "Number");
 
             return View(supply);
         }

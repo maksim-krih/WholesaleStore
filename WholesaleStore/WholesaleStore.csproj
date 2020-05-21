@@ -232,6 +232,9 @@
     <Compile Include="Models\Dtos\AddressDto.cs" />
     <Compile Include="Models\Dtos\CityDto.cs" />
     <Compile Include="Models\Dtos\EmployeeDto.cs" />
+    <Compile Include="Models\Dtos\SupplyContentDto.cs" />
+    <Compile Include="Models\Dtos\SupplyShipmentDto.cs" />
+    <Compile Include="Models\Dtos\SupplyDto.cs" />
     <Compile Include="Models\Dtos\OrderDto.cs" />
     <Compile Include="Models\Dtos\StorageDto.cs" />
     <Compile Include="Models\Dtos\SupplierDto.cs" />
@@ -453,15 +456,15 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\OrderManager\CreateOrder.cshtml" />
     <Content Include="Views\OrderManager\Delete.cshtml" />
-    <Content Include="Views\OrderManager\Details.cshtml" />
     <Content Include="Views\OrderManager\Edit.cshtml" />
     <Content Include="Views\OrderManager\Order.cshtml" />
     <Content Include="Views\OrderManager\OrderContent.cshtml" />
-    <Content Include="Views\SupplyManager\Create.cshtml" />
+    <Content Include="Views\SupplyManager\CreateSupply.cshtml" />
     <Content Include="Views\SupplyManager\Delete.cshtml" />
-    <Content Include="Views\SupplyManager\Details.cshtml" />
-    <Content Include="Views\SupplyManager\Edit.cshtml" />
+    <Content Include="Views\SupplyManager\EditShipment.cshtml" />
     <Content Include="Views\SupplyManager\Supply.cshtml" />
+    <Content Include="Views\SupplyManager\SupplyContent.cshtml" />
+    <Content Include="Views\SupplyManager\Shipment.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

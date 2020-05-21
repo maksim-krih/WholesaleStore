@@ -31,7 +31,6 @@ namespace WholesaleStore.Controllers
                 .Include(o => o.Client)
                 .Include(o => o.Employee)
                 .Include($"{nameof(WholesaleStore.Order.OrderContents)}.{nameof(OrderContent.Product)}")
-                .Include($"{nameof(WholesaleStore.Order.OrderContents)}.{nameof(OrderContent.OrderShipments)}")
                 );
 
             return View(orders);

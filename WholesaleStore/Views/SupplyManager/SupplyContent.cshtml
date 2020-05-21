@@ -1,0 +1,16 @@
+﻿@model WholesaleStore.Models.Dtos.SupplyDto
+
+<div class="form-group">
+    <div class="row" style="margin-left:0;margin-right:0;">
+        @Html.LabelFor(model => model.SupplyContents[Model.SupplyContents.Count - 1].Product, "Product", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-3">
+            @Html.DropDownListFor(model => model.SupplyContents[Model.SupplyContents.Count - 1].ProductId, Model.ProductList, htmlAttributes: new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.SupplyContents[Model.SupplyContents.Count - 1].ProductId, "", new { @class = "text-danger" })
+        </div>
+        @Html.LabelFor(model => Model.SupplyContents[Model.SupplyContents.Count - 1].Count, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-2">
+            @Html.EditorFor(model => model.SupplyContents[Model.SupplyContents.Count - 1].Count, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.SupplyContents[Model.SupplyContents.Count - 1].Count, "", new { @class = "text-danger" })
+        </div>
+    </div>
+</div>
