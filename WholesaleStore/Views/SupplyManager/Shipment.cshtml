@@ -63,6 +63,9 @@
                             Product
                         </th>
                         <th>
+                            Count
+                        </th>
+                        <th>
                             Storage Number
                         </th>
                     </tr>
@@ -72,6 +75,9 @@
                         <tr>
                             <td>
                                 @supplyContent.Product.Name
+                            </td>
+                            <td>
+                                @supplyContent.Count
                             </td>
                             <td>
                                 @(supplyContent.SupplyShipments.FirstOrDefault()?.ProductsInStorage.Storage.Number)

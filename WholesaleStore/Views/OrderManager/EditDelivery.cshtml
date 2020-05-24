@@ -1,0 +1,81 @@
+﻿@model WholesaleStore.Models.Dtos.OrderDto
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Edit</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+<div class="form-horizontal">
+    <h4>Delivery</h4>
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.Id)
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.OrderDeliveries[0].Employee, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(model => model.OrderDeliveries[0].EmployeeId, Model.EmployeeList, htmlAttributes: new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.EmployeeId, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.OrderDeliveries[0].ReceiveDate, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.OrderDeliveries[0].ReceiveDate, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.OrderDeliveries[0].ReceiveDate, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.OrderDeliveries[0].DeliveryDate, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.OrderDeliveries[0].DeliveryDate, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.OrderDeliveries[0].DeliveryDate, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    @for (var i = 0; i < Model.OrderContents.Count; i++)
+    {
+        <div class="form-group">
+            @Html.LabelFor(model => model.OrderContents[i].Product.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Model.OrderContents[i].Product.Name
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.OrderContents[i].Product.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Model.OrderContents[i].Count
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.OrderContents[i].OrderShipments[0].ProductsInStorage.StorageId, "StorageId", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.OrderContents[i].OrderShipments[0].ProductsInStorage.StorageId, Model.StorageList, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.EmployeeId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    }
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Save" class="btn btn-default" />
+        </div>
+    </div>
+</div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Delivery")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

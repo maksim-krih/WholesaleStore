@@ -10,43 +10,49 @@
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
-<div class="form-horizontal">
-    <h4>Supply</h4>
-    <hr />
-    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-    @Html.HiddenFor(model => model.Id)
 
-    @for (var i = 0; i < Model.SupplyContents.Count; i++)
-    {
-        <div class="form-group">
-            @Html.LabelFor(model => model.SupplyContents[i].Product.Name, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Model.SupplyContents[i].Product.Name
-            </div>
-        </div>
-        <div class="form-group">
-            @Html.LabelFor(model => model.SupplyContents[i].SupplyShipments[0].ProductsInStorage.StorageId, "StorageId", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownListFor(model => model.SupplyContents[i].SupplyShipments[0].ProductsInStorage.StorageId, Model.StorageList, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.EmployeeId, "", new { @class = "text-danger" })
-            </div>
-        </div>
-        <div class="form-group">
-            @Html.LabelFor(model => model.SupplyContents[i].SupplyShipments[0].EmployeeId, "EmployeeId", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownListFor(model => model.SupplyContents[i].SupplyShipments[0].EmployeeId, Model.EmployeeList, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.EmployeeId, "", new { @class = "text-danger" })
-            </div>
-        </div>
-    }
+    <div class="form-horizontal">
+        <h4>Shipment</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.Id)
 
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Save" class="btn btn-default" />
+        @for (var i = 0; i < Model.SupplyContents.Count; i++)
+        {
+            <div class="form-group">
+                @Html.LabelFor(model => model.SupplyContents[i].Product.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Model.SupplyContents[i].Product.Name
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.SupplyContents[i].Count, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Model.SupplyContents[i].Count
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.SupplyContents[i].SupplyShipments[0].ProductsInStorage.StorageId, "StorageId", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(model => model.SupplyContents[i].SupplyShipments[0].ProductsInStorage.StorageId, Model.StorageList, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.EmployeeId, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.SupplyContents[i].SupplyShipments[0].EmployeeId, "EmployeeId", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(model => model.SupplyContents[i].SupplyShipments[0].EmployeeId, Model.EmployeeList, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.EmployeeId, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        }
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
         </div>
     </div>
-</div>
 }
 
 <div>

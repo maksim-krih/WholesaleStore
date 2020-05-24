@@ -12,7 +12,15 @@ namespace WholesaleStore.Models.Dtos
         public System.DateTime Date { get; set; }
         public int TotalPrice { get; set; }
         public int Status { get; set; }
-        public List<OrderContent> OrderContents { get; set; }
+
+        public Address AddressDto { get; set; }
+        public Client Client { get; set; }
+        public Employee Employee { get; set; }
+        public List<OrderContentDto> OrderContents { get; set; }
+        public List<OrderDelivery> OrderDeliveries { get; set; }
+
         public SelectList ProductList { get; set; }
+        public SelectList EmployeeList { get; set; }
+        public SelectList StorageList { get; set; }
     }
 }

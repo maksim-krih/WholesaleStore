@@ -36,36 +36,51 @@ namespace WholesaleStore.Controllers
             return View(orders);
         }
 
-        public async Task<ActionResult> Details(int? id)
+        public async Task<ActionResult> Delivery()
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-
-            var order = await _dataExecutor.FirstOrDefaultAsync(
+            var orders = await _dataExecutor.ToListAsync(
                 _dataBaseManager.OrderRepository.Query
                 .Include(x => x.Address.City.Region.Country)
                 .Include(o => o.Client)
-                .Include(o => o.Employee),
-                x => x.Id == id
+                .Include(o => o.Employee)
+                .Include($"{nameof(WholesaleStore.Order.OrderContents)}.{nameof(OrderContent.Product)}")
                 );
 
-            if (order == null)
+            var orderDtos = orders.Select(x => new OrderDto
             {
-                return HttpNotFound();
-            }
+                AddressDto = x.Address,
+                Client = x.Client,
+                Date = x.Date,
+                Employee = x.Employee,
+                Number = x.Number,
+                OrderContents = x.OrderContents.Select(oc => new OrderContentDto
+                    { 
+                        Count = oc.Count,
+                        Product = oc.Product,
+                        OrderShipments = oc.OrderShipments.Select(os => new OrderShipmentDto
+                        {
+                            Count = os.Count,
+                            Date = os.Date,
+                            OrderContent = os.OrderContent,
+                            ProductsInStorage = os.ProductsInStorage
+                        }).ToList()
+                    }).ToList(),
+                OrderDeliveries = x.OrderDeliveries.ToList(),
+                Status = x.Status,
+                TotalPrice = x.TotalPrice,
+                Id = x.Id
+            });
 
-            return View(order);
+            return View(orderDtos);
         }
 
         public ActionResult CreateOrder()
         {
             var order = new OrderDto();
 
-            order.OrderContents = new List<OrderContent> 
+            order.OrderContents = new List<OrderContentDto> 
             {
-                new OrderContent { Count = 0, ProductId = 0 }
+                new OrderContentDto { Count = 0, ProductId = 0 }
             };
 
             order.ProductList = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "Name");
@@ -82,7 +97,7 @@ namespace WholesaleStore.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult AddOrderContent(OrderDto orderDto)
         {
-            orderDto.OrderContents.Add(new OrderContent());
+            orderDto.OrderContents.Add(new OrderContentDto());
             orderDto.ProductList = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "Name");
 
             return PartialView("OrderContent", orderDto);
@@ -110,7 +125,11 @@ namespace WholesaleStore.Controllers
                         CityId = orderDto.CityId.Value,
                         ZipCode = orderDto.ZipCode
                     },
-                    OrderContents = orderDto.OrderContents
+                    OrderContents = orderDto.OrderContents.Select(x => new OrderContent
+                    {
+                        Count = x.Count,
+                        ProductId = x.ProductId
+                    }).ToList()
 
                 };
 
@@ -130,7 +149,7 @@ namespace WholesaleStore.Controllers
             return View(orderDto);
         }
 
-        public async Task<ActionResult> Edit(int? id)
+        public async Task<ActionResult> EditDelivery(int? id)
         {
             if (id == null)
             {
@@ -150,33 +169,42 @@ namespace WholesaleStore.Controllers
                 return HttpNotFound();
             }
 
+            var orderShipmentDto = new List<OrderShipmentDto>();
+
+            for (var i = 0; i < order.OrderContents.Count; i++)
+            {
+                orderShipmentDto.Add(new OrderShipmentDto
+                {
+                    ProductsInStorage = new ProductsInStorage()
+                });
+            }
+
             var orderDto = new OrderDto
             {
-                Address = order.Address.Address1,
-                ZipCode = order.Address.ZipCode,
-                CityId = order.Address.CityId,
-                CountryId = order.Address.City.Region.CountryId,
                 Id = order.Id,
-                RegionId = order.Address.City.RegionId,
-                Number = order.Number,
-                EmployeeId = order.EmployeeId,
-                ClientId = order.ClientId,
-                Date = order.Date,
-                TotalPrice = order.TotalPrice,
-                Status = order.Status,
+                OrderContents = order.OrderContents.Select(x => new OrderContentDto
+                {
+                    Count = x.Count,
+                    Product = x.Product,
+                    OrderShipments = orderShipmentDto,
+                    
+                }).ToList(),
+                OrderDeliveries = new List<OrderDelivery>
+                {
+                    new OrderDelivery()
+                }
             };
 
-            AddressHelper.ConfigureDto(_dataBaseManager, orderDto);
-
-            ViewBag.ClientId = new SelectList(_dataBaseManager.ClientRepository.Query, "Id", "FirstName", orderDto.ClientId);
-            ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FirstName", orderDto.EmployeeId);
+            orderDto.ProductList = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "Name");
+            orderDto.EmployeeList = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FirstName");
+            orderDto.StorageList = new SelectList(_dataBaseManager.StorageRepository.Query, "Id", "Number");
 
             return View(orderDto);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(OrderDto order)
+        public async Task<ActionResult> EditDelivery(OrderDto order)
         {
             if (ModelState.IsValid)
             {
@@ -188,25 +216,46 @@ namespace WholesaleStore.Controllers
                     x => x.Id == order.Id
                 );
 
-                entity.Address.Address1 = order.Address;
-                entity.Address.ZipCode = order.ZipCode;
-                entity.Address.CityId = order.CityId.Value;
-                entity.Number = order.Number;
-                entity.EmployeeId = order.EmployeeId;
-                entity.ClientId = order.ClientId;
-                entity.Date = order.Date;
-                entity.TotalPrice = order.TotalPrice;
-                entity.Status = order.Status;
+                var orderContents = entity.OrderContents.ToList();
+
+                for (var i = 0; i < entity.OrderContents.Count; i++)
+                {
+                    var orderShipmentDto = order.OrderContents[i].OrderShipments[0];
+
+                    if (orderContents[i].OrderShipments.Count == 0)
+                    {
+                        orderContents[i].OrderShipments.Add(new OrderShipment());
+                    }
+
+                    var supplyShipment = orderContents[i].OrderShipments.FirstOrDefault();
+
+                    supplyShipment.ProductsInStorage = new ProductsInStorage
+                    {
+                        StorageId = orderShipmentDto.ProductsInStorage.StorageId,
+                        ProductId = orderContents[0].ProductId
+                    };
+                    supplyShipment.Date = DateTime.Now;
+                }
+
+                if (entity.OrderDeliveries.Count == 0)
+                {
+                    entity.OrderDeliveries.Add(new OrderDelivery());
+                }
+
+                var orderDeliveries = entity.OrderDeliveries.FirstOrDefault();
+
+                orderDeliveries.DeliveryDate = order.OrderDeliveries.FirstOrDefault().DeliveryDate;
+                orderDeliveries.EmployeeId = order.OrderDeliveries.FirstOrDefault().EmployeeId;
+                orderDeliveries.ReceiveDate = order.OrderDeliveries.FirstOrDefault().ReceiveDate;
 
                 await _dataBaseManager.OrderRepository.CommitAsync();
 
-                return RedirectToAction("Order");
+                return RedirectToAction("Shipment");
             }
 
-            AddressHelper.ConfigureDto(_dataBaseManager, order);
-
-            ViewBag.ClientId = new SelectList(_dataBaseManager.ClientRepository.Query, "Id", "FirstName", order.ClientId);
-            ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FirstName", order.EmployeeId);
+            order.ProductList = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "Name");
+            order.EmployeeList = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FirstName");
+            order.StorageList = new SelectList(_dataBaseManager.StorageRepository.Query, "Id", "Number");
 
             return View(order);
         }

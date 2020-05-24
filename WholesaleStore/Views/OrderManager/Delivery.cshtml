@@ -1,0 +1,132 @@
+﻿@using WholesaleStore.Common.Enums
+@using WholesaleStore.Utils
+@model IEnumerable<WholesaleStore.Models.Dtos.OrderDto>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<table class="table table-hover">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Number)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Employee)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Client)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Address)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Date)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TotalPrice)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Status)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr data-toggle="collapse" data-target="#@(item.Id)" aria-expanded="false" aria-controls="@item.Id">
+            <td>
+                @item.Number
+            </td>
+            <td>
+                @item.Employee.FirstName
+                @item.Employee.LastName
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Client.FirstName)
+                @Html.DisplayFor(modelItem => item.Client.LastName)
+            </td>
+            <td>
+                @if (item.Address != null)
+                {
+                    <div>
+                        @item.AddressDto.ZipCode,
+                        @item.AddressDto.City.Region.Country.Name,
+                        @item.AddressDto.City.Region.Name,
+                        @item.AddressDto.City.Name,
+                        @item.AddressDto.Address1
+                    </div>
+                }
+            </td>
+            <td>
+                @item.Date
+            </td>
+            <td>
+                @item.TotalPrice
+            </td>
+            <td>
+                @(((OrderStatus)item.Status).GetDescription())
+            </td>
+            <td>
+                @Html.ActionLink("Delivery", "EditDelivery", new { id = item.Id })
+            </td>
+        </tr>
+        <tr id="@item.Id" class="collapse">
+            <td colspan="8">
+                <table class="table borderless">
+                    <tr>
+                        <th>
+                            Employee
+                        </th>
+                        <th>
+                            Receive Date
+                        </th>
+                        <th>
+                            Delivery Date
+                        </th>
+                    </tr>
+                    <tr>
+                        <td>
+                            @(item.OrderDeliveries.FirstOrDefault()?.Employee.FirstName)
+                            @(item.OrderDeliveries.FirstOrDefault()?.Employee.LastName)
+                        </td>
+                        <td>
+                            @(item.OrderDeliveries.FirstOrDefault()?.ReceiveDate)
+                        </td>
+                        <td>
+                            @(item.OrderDeliveries.FirstOrDefault()?.DeliveryDate)
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            Product
+                        </th>
+                        <th>
+                            Count
+                        </th>
+                        <th>
+                            Storage
+                        </th>
+                    </tr>
+
+                    @foreach (var orderContent in item.OrderContents)
+                    {
+                        <tr>
+                            <td>
+                                @orderContent.Product.Name
+                            </td>
+                            <td>
+                                @orderContent.Count
+                            </td>
+                            <td>
+                                @(orderContent.OrderShipments.FirstOrDefault()?.ProductsInStorage.Storage.Number)
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </td>
+        </tr>
+    }
+</table>

@@ -9,6 +9,5 @@
         public int Count { get; set; }
         public int EmployeeId { get; set; }
         public virtual ProductsInStorage ProductsInStorage { get; set; }
-
     }
 }

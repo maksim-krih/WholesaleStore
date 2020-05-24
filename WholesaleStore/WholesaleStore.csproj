@@ -232,6 +232,8 @@
     <Compile Include="Models\Dtos\AddressDto.cs" />
     <Compile Include="Models\Dtos\CityDto.cs" />
     <Compile Include="Models\Dtos\EmployeeDto.cs" />
+    <Compile Include="Models\Dtos\OrderShipmentDto.cs" />
+    <Compile Include="Models\Dtos\OrderContentDto.cs" />
     <Compile Include="Models\Dtos\SupplyContentDto.cs" />
     <Compile Include="Models\Dtos\SupplyShipmentDto.cs" />
     <Compile Include="Models\Dtos\SupplyDto.cs" />
@@ -364,17 +366,14 @@
     <Content Include="Views\Supplier\Index.cshtml" />
     <Content Include="Views\Brand\Create.cshtml" />
     <Content Include="Views\Brand\Delete.cshtml" />
-    <Content Include="Views\Brand\Details.cshtml" />
     <Content Include="Views\Brand\Edit.cshtml" />
     <Content Include="Views\Brand\Index.cshtml" />
     <Content Include="Views\Country\Create.cshtml" />
     <Content Include="Views\Country\Delete.cshtml" />
-    <Content Include="Views\Country\Details.cshtml" />
     <Content Include="Views\Country\Edit.cshtml" />
     <Content Include="Views\Country\Index.cshtml" />
     <Content Include="Views\City\Create.cshtml" />
     <Content Include="Views\City\Delete.cshtml" />
-    <Content Include="Views\City\Details.cshtml" />
     <Content Include="Views\City\Edit.cshtml" />
     <Content Include="Views\City\Index.cshtml" />
     <Content Include="Views\Region\Create.cshtml" />
@@ -399,7 +398,6 @@
     <Content Include="Views\Product\Index.cshtml" />
     <Content Include="Views\Client\Create.cshtml" />
     <Content Include="Views\Client\Delete.cshtml" />
-    <Content Include="Views\Client\Details.cshtml" />
     <Content Include="Views\Client\Edit.cshtml" />
     <Content Include="Views\Client\Index.cshtml" />
     <Content Include="Views\Employee\Create.cshtml" />
@@ -456,7 +454,7 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\OrderManager\CreateOrder.cshtml" />
     <Content Include="Views\OrderManager\Delete.cshtml" />
-    <Content Include="Views\OrderManager\Edit.cshtml" />
+    <Content Include="Views\OrderManager\EditDelivery.cshtml" />
     <Content Include="Views\OrderManager\Order.cshtml" />
     <Content Include="Views\OrderManager\OrderContent.cshtml" />
     <Content Include="Views\SupplyManager\CreateSupply.cshtml" />
@@ -465,6 +463,7 @@
     <Content Include="Views\SupplyManager\Supply.cshtml" />
     <Content Include="Views\SupplyManager\SupplyContent.cshtml" />
     <Content Include="Views\SupplyManager\Shipment.cshtml" />
+    <Content Include="Views\OrderManager\Delivery.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

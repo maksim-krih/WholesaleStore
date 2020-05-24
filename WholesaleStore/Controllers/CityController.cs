@@ -26,26 +26,6 @@ namespace WholesaleStore.Controllers
             return View(cities);
         }
 
-        public async Task<ActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-
-            var city = await _dataExecutor.FirstOrDefaultAsync(
-                _dataBaseManager.CityRepository.Query
-                .Include(x => x.Region.Country),
-                x => x.Id == id);
-
-            if (city == null)
-            {
-                return HttpNotFound();
-            }
-
-            return View(city);
-        }
-
         public ActionResult Create()
         {
             var city = new CityDto();

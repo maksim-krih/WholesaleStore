@@ -23,23 +23,6 @@ namespace WholesaleStore.Controllers
             return View(clients);
         }
 
-        public async Task<ActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-
-            var client = await _dataExecutor.FirstOrDefaultAsync(_dataBaseManager.ClientRepository.Query, x => x.Id == id);
-
-            if (client == null)
-            {
-                return HttpNotFound();
-            }
-
-            return View(client);
-        }
-
         public ActionResult Create()
         {
             return View();

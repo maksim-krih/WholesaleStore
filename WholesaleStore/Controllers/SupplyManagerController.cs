@@ -194,17 +194,22 @@ namespace WholesaleStore.Controllers
                 for (var i = 0; i < entity.SupplyContents.Count; i++)
                 {
                     var supplyShipmentDto = supply.SupplyContents[i].SupplyShipments[0];
-                    supplyContents[i].SupplyShipments.Add(new SupplyShipment
+
+                    if (supplyContents[i].SupplyShipments.Count == 0)
                     {
-                        EmployeeId = supplyShipmentDto.EmployeeId,
-                        ProductsInStorage = new ProductsInStorage 
-                        { 
-                            StorageId = supplyShipmentDto.ProductsInStorage.StorageId,
-                            ProductId = supplyContents[0].ProductId
-                        }, 
-                        Count = supplyContents[i].Count,
-                        Date = DateTime.Now
-                    });
+                        supplyContents[i].SupplyShipments.Add(new SupplyShipment());
+                    }
+
+                    var supplyShipment = supplyContents[i].SupplyShipments.FirstOrDefault();
+
+                    supplyShipment.EmployeeId = supplyShipmentDto.EmployeeId;
+                    supplyShipment.ProductsInStorage = new ProductsInStorage
+                    {
+                        StorageId = supplyShipmentDto.ProductsInStorage.StorageId,
+                        ProductId = supplyContents[0].ProductId
+                    };
+                    supplyShipment.Count = supplyContents[i].Count;
+                    supplyShipment.Date = DateTime.Now;
                 }
 
                 await _dataBaseManager.SupplyRepository.CommitAsync();
