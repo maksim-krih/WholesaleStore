@@ -250,7 +250,7 @@ namespace WholesaleStore.Controllers
 
                 await _dataBaseManager.OrderRepository.CommitAsync();
 
-                return RedirectToAction("Shipment");
+                return RedirectToAction("Delivery");
             }
 
             order.ProductList = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "Name");

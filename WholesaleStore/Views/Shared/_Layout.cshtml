@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var claimsIdentity = User.Identity as System.Security.Claims.ClaimsIdentity;
+}
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -21,37 +25,36 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li class="dropdown">
-                        <a href="#" data-toggle="dropdown" class="dropdown-toggle">Tables<b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            <li>@Html.ActionLink("Brands", "Index", "Brand")</li>
-                            <li>@Html.ActionLink("Cities", "Index", "City")</li>
-                            <li>@Html.ActionLink("Clients", "Index", "Client")</li>
-                            <li>@Html.ActionLink("Countries", "Index", "Country")</li>
-                            <li>@Html.ActionLink("Employee", "Index", "Employee")</li>
-                            <li>@Html.ActionLink("Orders", "Index", "Order")</li>
-                            <li>@Html.ActionLink("Order Contents", "Index", "OrderContent")</li>
-                            <li>@Html.ActionLink("Order Deliveries", "Index", "OrderDelivery")</li>
-                            <li>@Html.ActionLink("Order Shipments", "Index", "OrderShipment")</li>
-                            <li>@Html.ActionLink("Positions", "Index", "Position")</li>
-                            <li>@Html.ActionLink("Products", "Index", "Product")</li>
-                            <li>@Html.ActionLink("Products In Storages", "Index", "ProductsInStorage")</li>
-                            <li>@Html.ActionLink("Product Types", "Index", "ProductType")</li>
-                            <li>@Html.ActionLink("Regions", "Index", "Region")</li>
-                            <li>@Html.ActionLink("Storages", "Index", "Storage")</li>
-                            <li>@Html.ActionLink("Suppliers", "Index", "Supplier")</li>
-                            <li>@Html.ActionLink("Supplies", "Index", "Supply")</li>
-                            <li>@Html.ActionLink("Supply Contents", "Index", "SupplyContent")</li>
-                            <li>@Html.ActionLink("Supply Shipments", "Index", "SupplyShipment")</li>
-                        </ul>
-                    </li>
-                    <li class="dropdown">
-                        <a href="#" data-toggle="dropdown" class="dropdown-toggle">Supply<b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            <li>@Html.ActionLink("Supplies", "Supply", "SupplyManager")</li>
-                            <li>@Html.ActionLink("Shipments", "Shipment", "SupplyManager")</li>
-                        </ul>
-                    </li>
+                    @if (claimsIdentity.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value == "Administrator")
+                    {
+                        <li class="dropdown">
+                            <a href="#" data-toggle="dropdown" class="dropdown-toggle">Tables<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li>@Html.ActionLink("Brands", "Index", "Brand")</li>
+                                <li>@Html.ActionLink("Cities", "Index", "City")</li>
+                                <li>@Html.ActionLink("Clients", "Index", "Client")</li>
+                                <li>@Html.ActionLink("Countries", "Index", "Country")</li>
+                                <li>@Html.ActionLink("Employee", "Index", "Employee")</li>
+                                <li>@Html.ActionLink("Orders", "Index", "Order")</li>
+                                <li>@Html.ActionLink("Order Contents", "Index", "OrderContent")</li>
+                                <li>@Html.ActionLink("Order Deliveries", "Index", "OrderDelivery")</li>
+                                <li>@Html.ActionLink("Order Shipments", "Index", "OrderShipment")</li>
+                                <li>@Html.ActionLink("Positions", "Index", "Position")</li>
+                                <li>@Html.ActionLink("Products", "Index", "Product")</li>
+                                <li>@Html.ActionLink("Products In Storages", "Index", "ProductsInStorage")</li>
+                                <li>@Html.ActionLink("Product Types", "Index", "ProductType")</li>
+                                <li>@Html.ActionLink("Regions", "Index", "Region")</li>
+                                <li>@Html.ActionLink("Storages", "Index", "Storage")</li>
+                                <li>@Html.ActionLink("Suppliers", "Index", "Supplier")</li>
+                                <li>@Html.ActionLink("Supplies", "Index", "Supply")</li>
+                                <li>@Html.ActionLink("Supply Contents", "Index", "SupplyContent")</li>
+                                <li>@Html.ActionLink("Supply Shipments", "Index", "SupplyShipment")</li>
+                            </ul>
+                        </li>
+                    }
+                    @if (claimsIdentity.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value == "Order Manager" ||
+                        claimsIdentity.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value == "Administrator")
+                    {
                     <li class="dropdown">
                         <a href="#" data-toggle="dropdown" class="dropdown-toggle">Order<b class="caret"></b></a>
                         <ul class="dropdown-menu">
@@ -59,6 +62,18 @@
                             <li>@Html.ActionLink("Deliveries", "Delivery", "OrderManager")</li>
                         </ul>
                     </li>
+                    }
+                    @if (claimsIdentity.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value == "Supply Manager" ||
+                        claimsIdentity.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value == "Administrator")
+                    {
+                        <li class="dropdown">
+                            <a href="#" data-toggle="dropdown" class="dropdown-toggle">Supply<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li>@Html.ActionLink("Supplies", "Supply", "SupplyManager")</li>
+                                <li>@Html.ActionLink("Shipments", "Shipment", "SupplyManager")</li>
+                            </ul>
+                        </li>
+                    }
                     <li>@Html.ActionLink("About", "About", "Home")</li>
                 </ul>
                 @Html.Partial("_LoginPartial")

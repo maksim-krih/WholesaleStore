@@ -24,27 +24,6 @@ namespace WholesaleStore.Controllers
             return View(supplyContents);
         }
 
-        public async Task<ActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            
-            var supplyContent = await _dataExecutor.FirstOrDefaultAsync(
-                _dataBaseManager.SupplyContentRepository.Query
-                .Include(s => s.Product)
-                .Include(s => s.Supply),
-                x => x.Id == id);
-
-            if (supplyContent == null)
-            {
-                return HttpNotFound();
-            }
-            
-            return View(supplyContent);
-        }
-
         public ActionResult Create()
         {
             ViewBag.ProductId = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "Name");

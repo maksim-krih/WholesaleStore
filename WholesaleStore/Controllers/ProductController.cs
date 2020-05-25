@@ -27,23 +27,6 @@ namespace WholesaleStore.Controllers
             return View(products);
         }
 
-        public async Task<ActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-
-            var product = await _dataExecutor.FirstOrDefaultAsync(_dataBaseManager.ProductRepository.Query, x => x.Id == id);
-
-            if (product == null)
-            {
-                return HttpNotFound();
-            }
-
-            return View(product);
-        }
-
         public ActionResult Create()
         {
             ViewBag.BrandId = new SelectList(_dataBaseManager.BrandRepository.Query, "Id", "Name");

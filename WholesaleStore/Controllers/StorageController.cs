@@ -26,26 +26,6 @@ namespace WholesaleStore.Controllers
             return View(storages);
         }
 
-        public async Task<ActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-
-            var storage = await _dataExecutor.FirstOrDefaultAsync(
-                _dataBaseManager.StorageRepository.Query
-                .Include(x => x.Address.City.Region.Country),
-                x => x.Id == id);
-
-            if (storage == null)
-            {
-                return HttpNotFound();
-            }
-
-            return View(storage);
-        }
-
         public ActionResult Create()
         {
             var supplier = new StorageDto();

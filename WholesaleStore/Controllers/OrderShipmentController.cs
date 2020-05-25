@@ -24,27 +24,6 @@ namespace WholesaleStore.Controllers
             return View(orderShipments);
         }
 
-        public async Task<ActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            
-            var orderShipment = await _dataExecutor.FirstOrDefaultAsync(
-                _dataBaseManager.OrderShipmentRepository.Query
-                .Include(o => o.OrderContent)
-                .Include(o => o.ProductsInStorage), 
-                x => x.Id == id);
-
-            if (orderShipment == null)
-            {
-                return HttpNotFound();
-            }
-            
-            return View(orderShipment);
-        }
-
         public ActionResult Create()
         {
             ViewBag.OrderContentId = new SelectList(_dataBaseManager.OrderContentRepository.Query, "Id", "Id");

@@ -26,23 +26,6 @@ namespace WholesaleStore.Controllers
             return View(regions);
         }
 
-        public async Task<ActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-
-            var region = await _dataExecutor.FirstOrDefaultAsync(_dataBaseManager.RegionRepository.Query, x => x.Id == id);
-
-            if (region == null)
-            {
-                return HttpNotFound();
-            }
-
-            return View(region);
-        }
-
         public ActionResult Create()
         {
             ViewBag.CountryId = new SelectList(_dataBaseManager.CountryRepository.Query, "Id", "Name");

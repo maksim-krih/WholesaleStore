@@ -32,27 +32,6 @@ namespace WholesaleStore.Controllers
             return View(employees);
         }
 
-        public async Task<ActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-
-            var employee = await _dataExecutor.FirstOrDefaultAsync(
-                _dataBaseManager.EmployeeRepository.Query
-                .Include(x => x.Address.City.Region.Country)
-                .Include(e => e.Position)
-                );
-
-            if (employee == null)
-            {
-                return HttpNotFound();
-            }
-
-            return View(employee);
-        }
-
         public ActionResult Create()
         {
             var employee = new EmployeeDto();
