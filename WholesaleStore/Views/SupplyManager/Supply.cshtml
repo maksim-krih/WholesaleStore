@@ -2,11 +2,7 @@
 @using WholesaleStore.Utils
 @model IEnumerable<WholesaleStore.Supply>
 
-@{
-    ViewBag.Title = "Index";
-}
-
-<h2>Index</h2>
+<h2>Supply</h2>
 
 <p>
     @Html.ActionLink("Create New", "CreateSupply")
@@ -51,7 +47,8 @@
                 @item.Date
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.Id })
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
             </td>
         </tr>
         <tr id="@item.Id" class="collapse">
