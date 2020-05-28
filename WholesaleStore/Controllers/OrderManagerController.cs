@@ -54,17 +54,17 @@ namespace WholesaleStore.Controllers
                 Employee = x.Employee,
                 Number = x.Number,
                 OrderContents = x.OrderContents.Select(oc => new OrderContentDto
-                    { 
-                        Count = oc.Count,
-                        Product = oc.Product,
-                        OrderShipments = oc.OrderShipments.Select(os => new OrderShipmentDto
-                        {
-                            Count = os.Count,
-                            Date = os.Date,
-                            OrderContent = os.OrderContent,
-                            ProductsInStorage = os.ProductsInStorage
-                        }).ToList()
-                    }).ToList(),
+                {
+                    Count = oc.Count,
+                    Product = oc.Product,
+                    OrderShipments = oc.OrderShipments.Select(os => new OrderShipmentDto
+                    {
+                        Count = os.Count,
+                        Date = os.Date,
+                        OrderContent = os.OrderContent,
+                        ProductsInStorage = os.ProductsInStorage
+                    }).ToList()
+                }).ToList(),
                 OrderDeliveries = x.OrderDeliveries.ToList(),
                 Status = x.Status,
                 TotalPrice = x.TotalPrice,
@@ -78,17 +78,17 @@ namespace WholesaleStore.Controllers
         {
             var order = new OrderDto();
 
-            order.OrderContents = new List<OrderContentDto> 
+            order.OrderContents = new List<OrderContentDto>
             {
                 new OrderContentDto { Count = 0, ProductId = 0 }
             };
 
-            order.ProductList = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "Name");
+            order.ProductList = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "FullName");
 
             AddressHelper.ConfigureDto(_dataBaseManager, order);
 
-            ViewBag.ClientId = new SelectList(_dataBaseManager.ClientRepository.Query, "Id", "FirstName");
-            ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FirstName");
+            ViewBag.ClientId = new SelectList(_dataBaseManager.ClientRepository.Query, "Id", "FullName");
+            ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FullName");
 
             return View(order);
         }
@@ -98,7 +98,7 @@ namespace WholesaleStore.Controllers
         public ActionResult AddOrderContent(OrderDto orderDto)
         {
             orderDto.OrderContents.Add(new OrderContentDto());
-            orderDto.ProductList = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "Name");
+            orderDto.ProductList = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "FullName");
 
             return PartialView("OrderContent", orderDto);
         }
@@ -110,7 +110,7 @@ namespace WholesaleStore.Controllers
             if (ModelState.IsValid)
             {
                 var products = await _dataExecutor.ToListAsync(_dataBaseManager.ProductRepository.Query);
-                
+
                 var order = new Order
                 {
                     Number = orderDto.Number,
@@ -139,7 +139,7 @@ namespace WholesaleStore.Controllers
                 return RedirectToAction("Order");
             }
 
-            orderDto.ProductList = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "Name");
+            orderDto.ProductList = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "FullName");
 
             AddressHelper.ConfigureDto(_dataBaseManager, orderDto);
 
@@ -187,7 +187,7 @@ namespace WholesaleStore.Controllers
                     Count = x.Count,
                     Product = x.Product,
                     OrderShipments = orderShipmentDto,
-                    
+
                 }).ToList(),
                 OrderDeliveries = new List<OrderDelivery>
                 {
@@ -195,8 +195,8 @@ namespace WholesaleStore.Controllers
                 }
             };
 
-            orderDto.ProductList = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "Name");
-            orderDto.EmployeeList = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FirstName");
+            orderDto.ProductList = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "FullName");
+            orderDto.EmployeeList = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FullName");
             orderDto.StorageList = new SelectList(_dataBaseManager.StorageRepository.Query, "Id", "Number");
 
             return View(orderDto);
@@ -244,20 +244,44 @@ namespace WholesaleStore.Controllers
 
                 var orderDeliveries = entity.OrderDeliveries.FirstOrDefault();
 
-                orderDeliveries.DeliveryDate = order.OrderDeliveries.FirstOrDefault().DeliveryDate;
+                orderDeliveries.DeliveryDate = DateTime.Now;
+                orderDeliveries.ReceiveDate = DateTime.Now;
                 orderDeliveries.EmployeeId = order.OrderDeliveries.FirstOrDefault().EmployeeId;
-                orderDeliveries.ReceiveDate = order.OrderDeliveries.FirstOrDefault().ReceiveDate;
+
+                entity.Status = (int)OrderStatus.Delivering;
 
                 await _dataBaseManager.OrderRepository.CommitAsync();
 
                 return RedirectToAction("Delivery");
             }
 
-            order.ProductList = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "Name");
-            order.EmployeeList = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FirstName");
+            order.ProductList = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "FullName");
+            order.EmployeeList = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FullName");
             order.StorageList = new SelectList(_dataBaseManager.StorageRepository.Query, "Id", "Number");
 
             return View(order);
+        }
+
+        [HttpPost]
+        public async Task<bool> CloseDelivery(int? id)
+        {
+            var order = await _dataExecutor.FirstOrDefaultAsync(
+                _dataBaseManager.OrderRepository.Query
+                .Include(x => x.Address.City.Region.Country)
+                .Include(o => o.Client)
+                .Include(o => o.Employee),
+                x => x.Id == id
+            );
+
+            var orderDeliveries = order.OrderDeliveries.FirstOrDefault();
+
+            orderDeliveries.ReceiveDate = DateTime.Now;
+
+            order.Status = (int)OrderStatus.Delivered;
+
+            await _dataBaseManager.OrderRepository.CommitAsync();
+
+            return true;
         }
 
         public async Task<ActionResult> Delete(int? id)

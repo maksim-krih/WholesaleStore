@@ -10,8 +10,8 @@ namespace WholesaleStore.Utils
             {
                 case OrderStatus.Preparing:
                     return "Preparing";
-                case OrderStatus.ReadyToDelivery:
-                    return "Ready To Delivery";
+                case OrderStatus.Delivering:
+                    return "Delivering";
                 case OrderStatus.Delivered:
                     return "Delivered";
                 default:

@@ -1,10 +1,6 @@
 ﻿@model IEnumerable<WholesaleStore.Storage>
 
-@{
-    ViewBag.Title = "Index";
-}
-
-<h2>Index</h2>
+<h2>Storage</h2>
 
 <p>
     @Html.ActionLink("Create New", "Create")
@@ -23,26 +19,27 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Number)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ContactPhone)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Address.ZipCode),
-            @Html.DisplayFor(modelItem => item.Address.City.Region.Country.Name),
-            @Html.DisplayFor(modelItem => item.Address.City.Region.Name),
-            @Html.DisplayFor(modelItem => item.Address.City.Name),
-            @Html.DisplayFor(modelItem => item.Address.Address1)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Number)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ContactPhone)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Address.ZipCode),
+                @Html.DisplayFor(modelItem => item.Address.City.Region.Country.Name),
+                @Html.DisplayFor(modelItem => item.Address.City.Region.Name),
+                @Html.DisplayFor(modelItem => item.Address.City.Name),
+                @Html.DisplayFor(modelItem => item.Address.Address1)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+            </td>
+        </tr>
+    }
 
 </table>

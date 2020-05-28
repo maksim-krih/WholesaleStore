@@ -78,9 +78,9 @@ namespace WholesaleStore.Controllers
                 new SupplyContentDto { Count = 0, ProductId = 0 }
             };
 
-            supply.ProductList = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "Name");
+            supply.ProductList = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "FullName");
 
-            ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FirstName");
+            ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FullName");
             ViewBag.SupplierId = new SelectList(_dataBaseManager.SupplierRepository.Query, "Id", "CompanyName");
 
             return View(supply);
@@ -91,7 +91,7 @@ namespace WholesaleStore.Controllers
         public ActionResult AddSupplyContent(SupplyDto supplyDto)
         {
             supplyDto.SupplyContents.Add(new SupplyContentDto());
-            supplyDto.ProductList = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "Name");
+            supplyDto.ProductList = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "FullName");
 
             return PartialView("SupplyContent", supplyDto);
         }
@@ -123,7 +123,7 @@ namespace WholesaleStore.Controllers
                 return RedirectToAction("Supply");
             }
 
-            supplyDto.ProductList = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "Name");
+            supplyDto.ProductList = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "FullName");
 
             ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FirstName", supplyDto.EmployeeId);
             ViewBag.SupplierId = new SelectList(_dataBaseManager.SupplierRepository.Query, "Id", "CompanyName", supplyDto.SupplierId);
@@ -170,8 +170,8 @@ namespace WholesaleStore.Controllers
                 }).ToList()
             };
 
-            supplyDto.ProductList = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "Name");
-            supplyDto.EmployeeList = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FirstName");
+            supplyDto.ProductList = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "FullName");
+            supplyDto.EmployeeList = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FullName");
             supplyDto.StorageList = new SelectList(_dataBaseManager.StorageRepository.Query, "Id", "Number");
 
             return View(supplyDto);
@@ -212,16 +212,34 @@ namespace WholesaleStore.Controllers
                     supplyShipment.Date = DateTime.Now;
                 }
 
+                entity.Status = (int)SupplyStatus.Delivering;
+
                 await _dataBaseManager.SupplyRepository.CommitAsync();
 
                 return RedirectToAction("Shipment");
             }
 
-            supply.ProductList = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "Name");
-            supply.EmployeeList = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FirstName");
+            supply.ProductList = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "FullName");
+            supply.EmployeeList = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FullName");
             supply.StorageList = new SelectList(_dataBaseManager.StorageRepository.Query, "Id", "Number");
 
             return View(supply);
+        }
+
+        [HttpPost]
+        public async Task<bool> CloseShipment(int? id)
+        {
+            var order = await _dataExecutor.FirstOrDefaultAsync(
+                _dataBaseManager.SupplyRepository.Query
+                .Include(s => s.Employee)
+                .Include(s => s.Supplier),
+                x => x.Id == id);
+
+            order.Status = (int)SupplyStatus.Delivered;
+
+            await _dataBaseManager.SupplyRepository.CommitAsync();
+
+            return true;
         }
 
         public async Task<ActionResult> Delete(int? id)

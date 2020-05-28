@@ -25,7 +25,7 @@
             @Html.DisplayNameFor(model => model.Date)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.TotalPrice)
+            Total Price
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Status)
@@ -101,3 +101,11 @@
         </tr>
     }
 </table>
+
+@section Scripts {
+    <script type="text/javascript">
+        $('tr td:last-child').click(function (e) {
+            e.stopPropagation();
+        });
+    </script>
+}

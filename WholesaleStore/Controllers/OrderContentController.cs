@@ -27,7 +27,7 @@ namespace WholesaleStore.Controllers
         public ActionResult Create()
         {
             ViewBag.OrderId = new SelectList(_dataBaseManager.OrderRepository.Query, "Id", "Id");
-            ViewBag.ProductId = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "Name");
+            ViewBag.ProductId = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "FullName");
             
             return View();
         }

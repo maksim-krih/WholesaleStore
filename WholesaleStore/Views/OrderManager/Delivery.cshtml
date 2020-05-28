@@ -2,11 +2,7 @@
 @using WholesaleStore.Utils
 @model IEnumerable<WholesaleStore.Models.Dtos.OrderDto>
 
-@{
-    ViewBag.Title = "Index";
-}
-
-<h2>Index</h2>
+<h2>Delivery</h2>
 
 <table class="table table-hover">
     <tr>
@@ -26,7 +22,7 @@
             @Html.DisplayNameFor(model => model.Date)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.TotalPrice)
+            Total Price
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Status)
@@ -49,7 +45,7 @@
                 @Html.DisplayFor(modelItem => item.Client.LastName)
             </td>
             <td>
-                @if (item.Address != null)
+                @if (item.AddressDto != null)
                 {
                     <div>
                         @item.AddressDto.ZipCode,
@@ -70,7 +66,14 @@
                 @(((OrderStatus)item.Status).GetDescription())
             </td>
             <td>
-                @Html.ActionLink("Delivery", "EditDelivery", new { id = item.Id })
+                @if ((OrderStatus)item.Status != OrderStatus.Delivered)
+                {
+                    @Html.ActionLink("Prepare Delivery", "EditDelivery", new { id = item.Id })
+                }
+                @if ((OrderStatus)item.Status == OrderStatus.Delivering)
+                {
+                    <span> | <a id="close" name="@item.Id" href="">Close</a></span>
+                }
             </td>
         </tr>
         <tr id="@item.Id" class="collapse">
@@ -130,3 +133,24 @@
         </tr>
     }
 </table>
+
+@section Scripts {
+    <script type="text/javascript">
+        $("#close").on('click', function () {
+            $.ajax({
+                async: true,
+                data: { id: this.name },
+                type: "POST",
+                url: '/OrderManager/CloseDelivery',
+                success: function (isSuccess) {
+                    if (isSuccess) {
+                        window.location.reload()
+                    }
+                }
+            });
+        });
+        $('tr td:last-child').click(function (e) {
+            e.stopPropagation();
+        });
+    </script>
+}

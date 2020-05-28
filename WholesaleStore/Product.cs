@@ -30,7 +30,9 @@ namespace WholesaleStore
         public string Description { get; set; }
         public int AmountInPackage { get; set; }
         public int PackagePrice { get; set; }
-    
+
+        public string FullName => $"[{Code}] {Name}";
+
         public virtual Brand Brand { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<OrderContent> OrderContents { get; set; }

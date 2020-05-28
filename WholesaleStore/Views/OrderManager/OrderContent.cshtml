@@ -1,7 +1,7 @@
 ﻿@model WholesaleStore.Models.Dtos.OrderDto
 <div class="form-group">
     <div class="row" style="margin-left:0;margin-right:0;">
-        @Html.LabelFor(model => model.OrderContents[Model.OrderContents.Count - 1].Product, "Product", htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.LabelFor(model => model.OrderContents[Model.OrderContents.Count - 1].Product, $"{Model.OrderContents.Count}. Product", htmlAttributes: new { @class = "control-label col-md-2" }) 
         <div class="col-md-3">
             @Html.DropDownListFor(model => model.OrderContents[Model.OrderContents.Count - 1].ProductId, Model.ProductList, htmlAttributes: new { @class = "form-control" })
             @Html.ValidationMessageFor(model => model.OrderContents[Model.OrderContents.Count - 1].ProductId, "", new { @class = "text-danger" })

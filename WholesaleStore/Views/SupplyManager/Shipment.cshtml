@@ -2,15 +2,8 @@
 @using WholesaleStore.Utils
 @model IEnumerable<WholesaleStore.Supply>
 
-@{
-    ViewBag.Title = "Index";
-}
+<h2>Shipment</h2>
 
-<h2>Index</h2>
-
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
 <table class="table table-hover">
     <tr>
         <th>
@@ -51,8 +44,14 @@
                 @item.Date
             </td>
             <td>
-                @Html.ActionLink("Shipment", "EditShipment", new { id = item.Id }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                @if ((SupplyStatus)item.Status != SupplyStatus.Delivered)
+                {
+                    @Html.ActionLink("Shipment", "EditShipment", new { id = item.Id })
+                }
+                @if ((SupplyStatus)item.Status == SupplyStatus.Delivering)
+                {
+                    <span> | <a id="close" name="@item.Id" href="">Close</a></span>
+                }
             </td>
         </tr>
         <tr id="@item.Id" class="collapse">
@@ -90,3 +89,24 @@
     }
 
 </table>
+
+@section Scripts {
+    <script type="text/javascript">
+        $("#close").on('click', function () {
+            $.ajax({
+                async: true,
+                data: { id: this.name },
+                type: "POST",
+                url: '/SupplyManager/CloseShipment',
+                success: function (isSuccess) {
+                    if (isSuccess) {
+                        window.location.reload()
+                    }
+                }
+            });
+        });
+        $('tr td:last-child').click(function (e) {
+            e.stopPropagation();
+        });
+    </script>
+}

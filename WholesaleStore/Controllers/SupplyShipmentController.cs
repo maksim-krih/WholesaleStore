@@ -30,7 +30,7 @@ namespace WholesaleStore.Controllers
 
         public ActionResult Create()
         {
-            ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FirstName");
+            ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FullName");
             ViewBag.ProductInStorageId = new SelectList(_dataBaseManager.ProductsInStorageRepository.Query, "Id", "Id");
             ViewBag.SupplyContentId = new SelectList(_dataBaseManager.SupplyContentRepository.Query, "Id", "Id");
             

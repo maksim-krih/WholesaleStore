@@ -80,3 +80,11 @@
     }
 
 </table>
+
+@section Scripts {
+    <script type="text/javascript">
+        $('tr td:last-child').click(function (e) {
+            e.stopPropagation();
+        });
+    </script>
+}
