@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Web.Mvc;
+using WholesaleStore.Common.Enums;
 
 namespace WholesaleStore.Models.Dtos
 {
@@ -10,7 +11,7 @@ namespace WholesaleStore.Models.Dtos
         public int EmployeeId { get; set; }
         public int SupplierId { get; set; }
         public System.DateTime Date { get; set; }
-        public int Status { get; set; }
+        public SupplyStatus Status { get; set; }
         public List<SupplyContentDto> SupplyContents { get; set; }
         public SelectList ProductList { get; set; }
         public SelectList EmployeeList { get; set; }

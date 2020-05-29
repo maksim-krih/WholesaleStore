@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Web.Mvc;
+using WholesaleStore.Common.Enums;
 
 namespace WholesaleStore.Models.Dtos
 {
@@ -11,7 +12,7 @@ namespace WholesaleStore.Models.Dtos
         public int ClientId { get; set; }
         public System.DateTime Date { get; set; }
         public int TotalPrice { get; set; }
-        public int Status { get; set; }
+        public OrderStatus Status { get; set; }
 
         public Address AddressDto { get; set; }
         public Client Client { get; set; }

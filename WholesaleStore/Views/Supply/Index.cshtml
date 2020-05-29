@@ -1,4 +1,6 @@
-﻿@model IEnumerable<WholesaleStore.Supply>
+﻿@using WholesaleStore.Utils
+@using WholesaleStore.Common.Enums
+@model IEnumerable<WholesaleStore.Supply>
 
 <h2>Supply</h2>
 
@@ -17,10 +19,10 @@
             @Html.DisplayNameFor(model => model.Status)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Employee.FirstName)
+            @Html.DisplayNameFor(model => model.Employee)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Supplier.CompanyName)
+            @Html.DisplayNameFor(model => model.Supplier)
         </th>
         <th></th>
     </tr>
@@ -35,10 +37,11 @@
                 @Html.DisplayFor(modelItem => item.Date)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Status)
+                @(((SupplyStatus)item.Status).GetDescription())
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Employee.FirstName)
+                @Html.DisplayFor(modelItem => item.Employee.LastName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Supplier.CompanyName)

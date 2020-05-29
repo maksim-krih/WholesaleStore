@@ -46,7 +46,7 @@ namespace WholesaleStore.Controllers
             }
 
             ViewBag.OrderId = new SelectList(_dataBaseManager.OrderRepository.Query, "Id", "Number", orderContent.OrderId);
-            ViewBag.ProductId = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "Name", orderContent.ProductId);
+            ViewBag.ProductId = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "FullName", orderContent.ProductId);
             
             return View(orderContent);
         }
@@ -66,7 +66,7 @@ namespace WholesaleStore.Controllers
             }
             
             ViewBag.OrderId = new SelectList(_dataBaseManager.OrderRepository.Query, "Id", "Number", orderContent.OrderId);
-            ViewBag.ProductId = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "Name", orderContent.ProductId);
+            ViewBag.ProductId = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "FullName", orderContent.ProductId);
             
             return View(orderContent);
         }
@@ -89,7 +89,7 @@ namespace WholesaleStore.Controllers
             }
             
             ViewBag.OrderId = new SelectList(_dataBaseManager.OrderRepository.Query, "Id", "Number", orderContent.OrderId);
-            ViewBag.ProductId = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "Name", orderContent.ProductId);
+            ViewBag.ProductId = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "FullName", orderContent.ProductId);
             
             return View(orderContent);
         }

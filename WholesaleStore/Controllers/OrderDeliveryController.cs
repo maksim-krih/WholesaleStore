@@ -27,7 +27,7 @@ namespace WholesaleStore.Controllers
         public ActionResult Create()
         {
             ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FullName");
-            ViewBag.OrderId = new SelectList(_dataBaseManager.OrderRepository.Query, "Id", "Id");
+            ViewBag.OrderId = new SelectList(_dataBaseManager.OrderRepository.Query, "Id", "Number");
             
             return View();
         }
@@ -45,8 +45,8 @@ namespace WholesaleStore.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FirstName", orderDelivery.EmployeeId);
-            ViewBag.OrderId = new SelectList(_dataBaseManager.OrderRepository.Query, "Id", "Id", orderDelivery.OrderId);
+            ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FullName", orderDelivery.EmployeeId);
+            ViewBag.OrderId = new SelectList(_dataBaseManager.OrderRepository.Query, "Id", "Number", orderDelivery.OrderId);
             
             return View(orderDelivery);
         }
@@ -69,8 +69,8 @@ namespace WholesaleStore.Controllers
                 return HttpNotFound();
             }
             
-            ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FirstName", orderDelivery.EmployeeId);
-            ViewBag.OrderId = new SelectList(_dataBaseManager.OrderRepository.Query, "Id", "Id", orderDelivery.OrderId);
+            ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FullName", orderDelivery.EmployeeId);
+            ViewBag.OrderId = new SelectList(_dataBaseManager.OrderRepository.Query, "Id", "Number", orderDelivery.OrderId);
             
             return View(orderDelivery);
         }
@@ -97,8 +97,8 @@ namespace WholesaleStore.Controllers
                 return RedirectToAction("Index");
             }
          
-            ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FirstName", orderDelivery.EmployeeId);
-            ViewBag.OrderId = new SelectList(_dataBaseManager.OrderRepository.Query, "Id", "Id", orderDelivery.OrderId);
+            ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FullName", orderDelivery.EmployeeId);
+            ViewBag.OrderId = new SelectList(_dataBaseManager.OrderRepository.Query, "Id", "Number", orderDelivery.OrderId);
         
             return View(orderDelivery);
         }

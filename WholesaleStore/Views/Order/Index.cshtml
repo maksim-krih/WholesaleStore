@@ -1,4 +1,6 @@
-﻿@model IEnumerable<WholesaleStore.Order>
+﻿@using WholesaleStore.Common.Enums
+@using WholesaleStore.Utils
+@model IEnumerable<WholesaleStore.Order>
 
 <h2>Order</h2>
 
@@ -44,7 +46,7 @@
                 @Html.DisplayFor(modelItem => item.TotalPrice)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Status)
+                @(((OrderStatus)item.Status).GetDescription())
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Address.ZipCode),
@@ -55,9 +57,11 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Client.FirstName)
+                @Html.DisplayFor(modelItem => item.Client.LastName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Employee.FirstName)
+                @Html.DisplayFor(modelItem => item.Employee.LastName)
             </td>
             <td>
                 @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |

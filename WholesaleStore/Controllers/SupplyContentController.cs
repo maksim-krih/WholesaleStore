@@ -27,7 +27,7 @@ namespace WholesaleStore.Controllers
         public ActionResult Create()
         {
             ViewBag.ProductId = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "FullName");
-            ViewBag.SupplyId = new SelectList(_dataBaseManager.SupplyRepository.Query, "Id", "Id");
+            ViewBag.SupplyId = new SelectList(_dataBaseManager.SupplyRepository.Query, "Id", "Number");
             
             return View();
         }
@@ -45,8 +45,8 @@ namespace WholesaleStore.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.ProductId = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "Name", supplyContent.ProductId);
-            ViewBag.SupplyId = new SelectList(_dataBaseManager.SupplyRepository.Query, "Id", "Id", supplyContent.SupplyId);
+            ViewBag.ProductId = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "FullName", supplyContent.ProductId);
+            ViewBag.SupplyId = new SelectList(_dataBaseManager.SupplyRepository.Query, "Id", "Number", supplyContent.SupplyId);
             
             return View(supplyContent);
         }
@@ -69,8 +69,8 @@ namespace WholesaleStore.Controllers
                 return HttpNotFound();
             }
             
-            ViewBag.ProductId = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "Name", supplyContent.ProductId);
-            ViewBag.SupplyId = new SelectList(_dataBaseManager.SupplyRepository.Query, "Id", "Id", supplyContent.SupplyId);
+            ViewBag.ProductId = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "FullName", supplyContent.ProductId);
+            ViewBag.SupplyId = new SelectList(_dataBaseManager.SupplyRepository.Query, "Id", "Number", supplyContent.SupplyId);
             
             return View(supplyContent);
         }
@@ -97,8 +97,8 @@ namespace WholesaleStore.Controllers
                 return RedirectToAction("Index");
             }
             
-            ViewBag.ProductId = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "Name", supplyContent.ProductId);
-            ViewBag.SupplyId = new SelectList(_dataBaseManager.SupplyRepository.Query, "Id", "Id", supplyContent.SupplyId);
+            ViewBag.ProductId = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "FullName", supplyContent.ProductId);
+            ViewBag.SupplyId = new SelectList(_dataBaseManager.SupplyRepository.Query, "Id", "Number", supplyContent.SupplyId);
             
             return View(supplyContent);
         }

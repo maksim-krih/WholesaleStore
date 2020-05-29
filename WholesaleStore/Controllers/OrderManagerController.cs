@@ -66,7 +66,7 @@ namespace WholesaleStore.Controllers
                     }).ToList()
                 }).ToList(),
                 OrderDeliveries = x.OrderDeliveries.ToList(),
-                Status = x.Status,
+                Status = (OrderStatus)x.Status,
                 TotalPrice = x.TotalPrice,
                 Id = x.Id
             });
@@ -143,8 +143,49 @@ namespace WholesaleStore.Controllers
 
             AddressHelper.ConfigureDto(_dataBaseManager, orderDto);
 
-            ViewBag.ClientId = new SelectList(_dataBaseManager.ClientRepository.Query, "Id", "FirstName", orderDto.ClientId);
-            ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FirstName", orderDto.EmployeeId);
+            ViewBag.ClientId = new SelectList(_dataBaseManager.ClientRepository.Query, "Id", "FullName", orderDto.ClientId);
+            ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FullName", orderDto.EmployeeId);
+
+            return View(orderDto);
+        }
+
+        public async Task<ActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            var order = await _dataExecutor.FirstOrDefaultAsync(
+                _dataBaseManager.OrderRepository.Query
+                .Include(x => x.Address.City.Region.Country)
+                .Include(o => o.Client)
+                .Include(o => o.Employee),
+                x => x.Id == id
+                );
+
+            if (order == null)
+            {
+                return HttpNotFound();
+            }
+
+            var orderDto = new OrderDto
+            {
+                Address = order.Address.Address1,
+                ZipCode = order.Address.ZipCode,
+                CityId = order.Address.CityId,
+                CountryId = order.Address.City.Region.CountryId,
+                Id = order.Id,
+                RegionId = order.Address.City.RegionId,
+                Number = order.Number,
+                EmployeeId = order.EmployeeId,
+                ClientId = order.ClientId
+            };
+
+            AddressHelper.ConfigureDto(_dataBaseManager, orderDto);
+
+            ViewBag.ClientId = new SelectList(_dataBaseManager.ClientRepository.Query, "Id", "FullName", orderDto.ClientId);
+            ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FullName", orderDto.EmployeeId);
 
             return View(orderDto);
         }

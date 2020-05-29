@@ -20,26 +20,26 @@
         @for (var i = 0; i < Model.SupplyContents.Count; i++)
         {
             <div class="form-group">
-                @Html.LabelFor(model => model.SupplyContents[i].Product.Name, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Model.SupplyContents[i].Product.Name
+                @Html.LabelFor(model => model.SupplyContents[i].Product, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10" style="padding-top: 7px;">
+                    [@Model.SupplyContents[i].Product.Code] @Model.SupplyContents[i].Product.Name
                 </div>
             </div>
             <div class="form-group">
                 @Html.LabelFor(model => model.SupplyContents[i].Count, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
+                <div class="col-md-10" style="padding-top: 7px;">
                     @Model.SupplyContents[i].Count
                 </div>
             </div>
             <div class="form-group">
-                @Html.LabelFor(model => model.SupplyContents[i].SupplyShipments[0].ProductsInStorage.StorageId, "StorageId", htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.SupplyContents[i].SupplyShipments[0].ProductsInStorage.StorageId, "Storage", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
                     @Html.DropDownListFor(model => model.SupplyContents[i].SupplyShipments[0].ProductsInStorage.StorageId, Model.StorageList, htmlAttributes: new { @class = "form-control" })
                     @Html.ValidationMessageFor(model => model.EmployeeId, "", new { @class = "text-danger" })
                 </div>
             </div>
             <div class="form-group">
-                @Html.LabelFor(model => model.SupplyContents[i].SupplyShipments[0].EmployeeId, "EmployeeId", htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.SupplyContents[i].SupplyShipments[0].EmployeeId, "Employee", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
                     @Html.DropDownListFor(model => model.SupplyContents[i].SupplyShipments[0].EmployeeId, Model.EmployeeList, htmlAttributes: new { @class = "form-control" })
                     @Html.ValidationMessageFor(model => model.EmployeeId, "", new { @class = "text-danger" })

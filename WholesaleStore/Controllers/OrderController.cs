@@ -2,6 +2,7 @@
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using WholesaleStore.Common.Enums;
 using WholesaleStore.Controllers.Base;
 using WholesaleStore.Data.Interfaces;
 using WholesaleStore.Models.Dtos;
@@ -56,7 +57,7 @@ namespace WholesaleStore.Controllers
                     ClientId = orderDto.ClientId,
                     Date = orderDto.Date,
                     TotalPrice = orderDto.TotalPrice,
-                    Status = orderDto.Status,
+                    Status = (int)orderDto.Status,
                     Address = new Address
                     {
                         Address1 = orderDto.Address,
@@ -73,8 +74,8 @@ namespace WholesaleStore.Controllers
 
             AddressHelper.ConfigureDto(_dataBaseManager, orderDto);
 
-            ViewBag.ClientId = new SelectList(_dataBaseManager.ClientRepository.Query, "Id", "FirstName", orderDto.ClientId);
-            ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FirstName", orderDto.EmployeeId);
+            ViewBag.ClientId = new SelectList(_dataBaseManager.ClientRepository.Query, "Id", "FullName", orderDto.ClientId);
+            ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FullName", orderDto.EmployeeId);
 
             return View(orderDto);
         }
@@ -112,13 +113,13 @@ namespace WholesaleStore.Controllers
                 ClientId = order.ClientId,
                 Date = order.Date,
                 TotalPrice = order.TotalPrice,
-                Status = order.Status,
+                Status = (OrderStatus)order.Status,
             };
 
             AddressHelper.ConfigureDto(_dataBaseManager, orderDto);
 
-            ViewBag.ClientId = new SelectList(_dataBaseManager.ClientRepository.Query, "Id", "FirstName", orderDto.ClientId);
-            ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FirstName", orderDto.EmployeeId);
+            ViewBag.ClientId = new SelectList(_dataBaseManager.ClientRepository.Query, "Id", "FullName", orderDto.ClientId);
+            ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FullName", orderDto.EmployeeId);
 
             return View(orderDto);
         }
@@ -145,7 +146,7 @@ namespace WholesaleStore.Controllers
                 entity.ClientId = order.ClientId;
                 entity.Date = order.Date;
                 entity.TotalPrice = order.TotalPrice;
-                entity.Status = order.Status;
+                entity.Status = (int)order.Status;
 
                 await _dataBaseManager.OrderRepository.CommitAsync();
 
@@ -154,8 +155,8 @@ namespace WholesaleStore.Controllers
 
             AddressHelper.ConfigureDto(_dataBaseManager, order);
 
-            ViewBag.ClientId = new SelectList(_dataBaseManager.ClientRepository.Query, "Id", "FirstName", order.ClientId);
-            ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FirstName", order.EmployeeId);
+            ViewBag.ClientId = new SelectList(_dataBaseManager.ClientRepository.Query, "Id", "FullName", order.ClientId);
+            ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FullName", order.EmployeeId);
 
             return View(order);
         }

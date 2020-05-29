@@ -2,8 +2,10 @@
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using WholesaleStore.Common.Enums;
 using WholesaleStore.Controllers.Base;
 using WholesaleStore.Data.Interfaces;
+using WholesaleStore.Models.Dtos;
 
 namespace WholesaleStore.Controllers
 {
@@ -29,18 +31,29 @@ namespace WholesaleStore.Controllers
 
         public ActionResult Create()
         {
+            var supply = new SupplyDto();
+
             ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FullName");
             ViewBag.SupplierId = new SelectList(_dataBaseManager.SupplierRepository.Query, "Id", "CompanyName");
 
-            return View();
+            return View(supply);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(Supply supply)
+        public async Task<ActionResult> Create(SupplyDto supplyDto)
         {
             if (ModelState.IsValid)
             {
+                var supply = new Supply
+                {
+                    Number = supplyDto.Number,
+                    EmployeeId = supplyDto.EmployeeId,
+                    Date = supplyDto.Date,
+                    Status = (int)supplyDto.Status,
+                    SupplierId = supplyDto.SupplierId
+                };
+
                 _dataBaseManager.SupplyRepository.Create(supply);
 
                 await _dataBaseManager.SupplyRepository.CommitAsync();
@@ -48,10 +61,10 @@ namespace WholesaleStore.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FirstName", supply.EmployeeId);
-            ViewBag.SupplierId = new SelectList(_dataBaseManager.SupplierRepository.Query, "Id", "CompanyName", supply.SupplierId);
+            ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FullName", supplyDto.EmployeeId);
+            ViewBag.SupplierId = new SelectList(_dataBaseManager.SupplierRepository.Query, "Id", "CompanyName", supplyDto.SupplierId);
 
-            return View(supply);
+            return View(supplyDto);
         }
 
         public async Task<ActionResult> Edit(int? id)
@@ -72,15 +85,25 @@ namespace WholesaleStore.Controllers
                 return HttpNotFound();
             }
 
-            ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FirstName", supply.EmployeeId);
-            ViewBag.SupplierId = new SelectList(_dataBaseManager.SupplierRepository.Query, "Id", "CompanyName", supply.SupplierId);
+            var supplyDto = new SupplyDto
+            {
+                Id = supply.Id,
+                Number = supply.Number,
+                EmployeeId = supply.EmployeeId,
+                SupplierId = supply.SupplierId,
+                Date = supply.Date,
+                Status = (SupplyStatus)supply.Status
+            };
 
-            return View(supply);
+            ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FullName", supplyDto.EmployeeId);
+            ViewBag.SupplierId = new SelectList(_dataBaseManager.SupplierRepository.Query, "Id", "CompanyName", supplyDto.SupplierId);
+
+            return View(supplyDto);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Supply supply)
+        public async Task<ActionResult> Edit(SupplyDto supply)
         {
             if (ModelState.IsValid)
             {
@@ -94,14 +117,14 @@ namespace WholesaleStore.Controllers
                 entity.Date = supply.Date;
                 entity.EmployeeId = supply.EmployeeId;
                 entity.SupplierId = supply.SupplierId;
-                entity.Status = supply.Status;
+                entity.Status = (int)supply.Status;
 
                 await _dataBaseManager.SupplyRepository.CommitAsync();
 
                 return RedirectToAction("Index");
             }
 
-            ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FirstName", supply.EmployeeId);
+            ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FullName", supply.EmployeeId);
             ViewBag.SupplierId = new SelectList(_dataBaseManager.SupplierRepository.Query, "Id", "CompanyName", supply.SupplierId);
 
             return View(supply);

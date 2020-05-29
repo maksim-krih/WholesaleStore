@@ -11,13 +11,13 @@
             @Html.DisplayNameFor(model => model.Count)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.SupplyPrice)
+            Supply Price
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Product.Name)
+            @Html.DisplayNameFor(model => model.Product)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Supply.Id)
+            @Html.DisplayNameFor(model => model.Supply)
         </th>
         <th></th>
     </tr>
@@ -32,10 +32,10 @@
                 @Html.DisplayFor(modelItem => item.SupplyPrice)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Product.Name)
+                [@item.Product.Code] @item.Product.Name
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Supply.Id)
+                @Html.DisplayFor(modelItem => item.Supply.Number)
             </td>
             <td>
                 @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |

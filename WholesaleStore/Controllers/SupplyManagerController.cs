@@ -125,7 +125,7 @@ namespace WholesaleStore.Controllers
 
             supplyDto.ProductList = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "FullName");
 
-            ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FirstName", supplyDto.EmployeeId);
+            ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FullName", supplyDto.EmployeeId);
             ViewBag.SupplierId = new SelectList(_dataBaseManager.SupplierRepository.Query, "Id", "CompanyName", supplyDto.SupplierId);
 
             return View(supplyDto);

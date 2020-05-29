@@ -11,10 +11,10 @@
             @Html.DisplayNameFor(model => model.Amount)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Product.Name)
+            @Html.DisplayNameFor(model => model.Product)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Storage.ContactPhone)
+            @Html.DisplayNameFor(model => model.Storage)
         </th>
         <th></th>
     </tr>
@@ -26,10 +26,10 @@
                 @Html.DisplayFor(modelItem => item.Amount)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Product.Name)
+                [@item.Product.Code] @item.Product.Name
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Storage.ContactPhone)
+                @Html.DisplayFor(modelItem => item.Storage.Number)
             </td>
             <td>
                 @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |

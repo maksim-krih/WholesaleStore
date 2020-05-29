@@ -50,7 +50,7 @@ namespace WholesaleStore.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FirstName", supplyShipment.EmployeeId);
+            ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FullName", supplyShipment.EmployeeId);
             ViewBag.ProductInStorageId = new SelectList(_dataBaseManager.ProductsInStorageRepository.Query, "Id", "Id", supplyShipment.ProductInStorageId);
             ViewBag.SupplyContentId = new SelectList(_dataBaseManager.SupplyContentRepository.Query, "Id", "Id", supplyShipment.SupplyContentId);
             
@@ -76,7 +76,7 @@ namespace WholesaleStore.Controllers
                 return HttpNotFound();
             }
             
-            ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FirstName", supplyShipment.EmployeeId);
+            ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FullName", supplyShipment.EmployeeId);
             ViewBag.ProductInStorageId = new SelectList(_dataBaseManager.ProductsInStorageRepository.Query, "Id", "Id", supplyShipment.ProductInStorageId);
             ViewBag.SupplyContentId = new SelectList(_dataBaseManager.SupplyContentRepository.Query, "Id", "Id", supplyShipment.SupplyContentId);
             
@@ -107,7 +107,7 @@ namespace WholesaleStore.Controllers
                 return RedirectToAction("Index");
             }
         
-            ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FirstName", supplyShipment.EmployeeId);
+            ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FullName", supplyShipment.EmployeeId);
             ViewBag.ProductInStorageId = new SelectList(_dataBaseManager.ProductsInStorageRepository.Query, "Id", "Id", supplyShipment.ProductInStorageId);
             ViewBag.SupplyContentId = new SelectList(_dataBaseManager.SupplyContentRepository.Query, "Id", "Id", supplyShipment.SupplyContentId);
          

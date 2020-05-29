@@ -429,6 +429,7 @@
     <Content Include="Views\SupplyManager\SupplyContent.cshtml" />
     <Content Include="Views\SupplyManager\Shipment.cshtml" />
     <Content Include="Views\OrderManager\Delivery.cshtml" />
+    <Content Include="Views\OrderManager\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
