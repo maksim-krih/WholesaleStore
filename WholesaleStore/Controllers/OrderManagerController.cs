@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PagedList;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -33,7 +34,10 @@ namespace WholesaleStore.Controllers
                 .Include($"{nameof(WholesaleStore.Order.OrderContents)}.{nameof(OrderContent.Product)}")
                 );
 
-            return View(orders);
+            int pageSize = 7;
+            int pageNumber = 1;
+
+            return View(orders.ToPagedList(pageNumber, pageSize));
         }
 
         public async Task<ActionResult> Delivery()

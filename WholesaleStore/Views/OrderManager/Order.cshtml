@@ -1,6 +1,9 @@
 ﻿@using WholesaleStore.Common.Enums
 @using WholesaleStore.Utils
-@model IEnumerable<WholesaleStore.Order>
+@using PagedList.Mvc;
+@model PagedList.IPagedList<WholesaleStore.Order>
+
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
 <h2>Order</h2>
 
@@ -10,25 +13,25 @@
 <table class="table table-hover">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Number)
+            Number
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Employee)
+            Employee
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Client)
+            Client
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Address)
+            Address
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Date)
+            Date
         </th>
         <th>
             Total Price
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Status)
+            Status
         </th>
         <th></th>
     </tr>
@@ -101,6 +104,11 @@
         </tr>
     }
 </table>
+
+<br />
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("Index"))
 
 @section Scripts {
     <script type="text/javascript">

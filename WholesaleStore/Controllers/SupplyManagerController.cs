@@ -48,27 +48,6 @@ namespace WholesaleStore.Controllers
             return View(supplies);
         }
 
-        public async Task<ActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-
-            var supply = await _dataExecutor.FirstOrDefaultAsync(
-                _dataBaseManager.SupplyRepository.Query
-                .Include(s => s.Employee)
-                .Include(s => s.Supplier),
-                x => x.Id == id);
-
-            if (supply == null)
-            {
-                return HttpNotFound();
-            }
-
-            return View(supply);
-        }
-
         public ActionResult CreateSupply()
         {
             var supply = new SupplyDto();
@@ -124,6 +103,38 @@ namespace WholesaleStore.Controllers
             }
 
             supplyDto.ProductList = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "FullName");
+
+            ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FullName", supplyDto.EmployeeId);
+            ViewBag.SupplierId = new SelectList(_dataBaseManager.SupplierRepository.Query, "Id", "CompanyName", supplyDto.SupplierId);
+
+            return View(supplyDto);
+        }
+
+        public async Task<ActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            var supply = await _dataExecutor.FirstOrDefaultAsync(
+                _dataBaseManager.SupplyRepository.Query
+                .Include(s => s.Employee)
+                .Include(s => s.Supplier),
+                x => x.Id == id);
+
+            if (supply == null)
+            {
+                return HttpNotFound();
+            }
+
+            var supplyDto = new SupplyDto
+            {
+                Id = supply.Id,
+                Number = supply.Number,
+                EmployeeId = supply.EmployeeId,
+                SupplierId = supply.SupplierId
+            };
 
             ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FullName", supplyDto.EmployeeId);
             ViewBag.SupplierId = new SelectList(_dataBaseManager.SupplierRepository.Query, "Id", "CompanyName", supplyDto.SupplierId);
