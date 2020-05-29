@@ -90,26 +90,8 @@ namespace WholesaleStore.Controllers
             return View(region);
         }
 
-        public async Task<ActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-
-            var region = await _dataExecutor.FirstOrDefaultAsync(_dataBaseManager.RegionRepository.Query, x => x.Id == id);
-
-            if (region == null)
-            {
-                return HttpNotFound();
-            }
-
-            return View(region);
-        }
-
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed(int id)
+        [HttpPost]
+        public async Task<bool> Delete(int id)
         {
             var region = await _dataExecutor.FirstOrDefaultAsync(_dataBaseManager.RegionRepository.Query, x => x.Id == id);
 
@@ -117,7 +99,7 @@ namespace WholesaleStore.Controllers
 
             await _dataBaseManager.RegionRepository.CommitAsync();
 
-            return RedirectToAction("Index");
+            return true;
         }
 
         protected override void Dispose(bool disposing)

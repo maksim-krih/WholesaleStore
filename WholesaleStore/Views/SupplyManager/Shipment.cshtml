@@ -50,7 +50,7 @@
                 }
                 @if ((SupplyStatus)item.Status == SupplyStatus.Delivering)
                 {
-                    <span> | <a id="close" name="@item.Id" href="">Close</a></span>
+                    <span> | <a class="my-close" name="@item.Id" style="cursor:pointer;">Close</a></span>
                 }
             </td>
         </tr>
@@ -92,7 +92,7 @@
 
 @section Scripts {
     <script type="text/javascript">
-        $("#close").on('click', function () {
+        $(".my-close").on('click', function () {
             $.ajax({
                 async: true,
                 data: { id: this.name },
@@ -100,8 +100,11 @@
                 url: '/SupplyManager/CloseShipment',
                 success: function (isSuccess) {
                     if (isSuccess) {
-                        window.location.reload()
+                        window.location.reload();
                     }
+                },
+                error: function () {
+                    alert("error");
                 }
             });
         });

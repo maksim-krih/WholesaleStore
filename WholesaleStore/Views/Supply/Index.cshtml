@@ -45,9 +45,30 @@
             </td>
             <td>
                 @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                <a class="my-delete" name="@item.Id" style="cursor:pointer;">Delete</a>
             </td>
         </tr>
     }
 
 </table>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(".my-delete").on('click', function () {
+            $.ajax({
+                async: true,
+                data: { id: this.name },
+                type: "POST",
+                url: '/Supply/Delete',
+                success: function (isSuccess) {
+                    if (isSuccess) {
+                        window.location.reload();
+                    }
+                },
+                error: function () {
+                    alert("error");
+                }
+            });
+        });
+    </script>
+}

@@ -160,32 +160,8 @@ namespace WholesaleStore.Controllers
             return View(order);
         }
 
-        public async Task<ActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-
-            var order = await _dataExecutor.FirstOrDefaultAsync(
-                    _dataBaseManager.OrderRepository.Query
-                    .Include(x => x.Address.City.Region.Country)
-                    .Include(o => o.Client)
-                    .Include(o => o.Employee),
-                    x => x.Id == id
-                );
-
-            if (order == null)
-            {
-                return HttpNotFound();
-            }
-
-            return View(order);
-        }
-
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed(int id)
+        [HttpPost]
+        public async Task<bool> Delete(int id)
         {
             var order = await _dataExecutor.FirstOrDefaultAsync(
                     _dataBaseManager.OrderRepository.Query
@@ -199,7 +175,7 @@ namespace WholesaleStore.Controllers
 
             await _dataBaseManager.OrderRepository.CommitAsync();
 
-            return RedirectToAction("Index");
+            return true;
         }
 
         protected override void Dispose(bool disposing)

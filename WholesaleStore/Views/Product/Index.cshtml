@@ -31,34 +31,56 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Code)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Description)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.AmountInPackage)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.PackagePrice)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Brand.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ProductType.Name)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Code)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AmountInPackage)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PackagePrice)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Brand.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProductType.Name)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                <a class="my-delete" name="@item.Id" style="cursor:pointer;">Delete</a>
+            </td>
+        </tr>
+    }
 
 </table>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(".my-delete").on('click', function () {
+            $.ajax({
+                async: true,
+                data: { id: this.name },
+                type: "POST",
+                url: '/Product/Delete',
+                success: function (isSuccess) {
+                    if (isSuccess) {
+                        window.location.reload();
+                    }
+                },
+                error: function () {
+                    alert("error");
+                }
+            });
+        });
+    </script>
+}

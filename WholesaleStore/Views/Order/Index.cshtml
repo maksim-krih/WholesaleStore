@@ -14,7 +14,7 @@
             @Html.DisplayNameFor(model => model.Date)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.TotalPrice)
+            Total Price
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Status)
@@ -23,10 +23,10 @@
             @Html.DisplayNameFor(model => model.Address)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Client.FirstName)
+            @Html.DisplayNameFor(model => model.Client)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Employee.FirstName)
+            @Html.DisplayNameFor(model => model.Employee)
         </th>
         <th></th>
     </tr>
@@ -61,9 +61,30 @@
             </td>
             <td>
                 @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                <a class="my-delete" name="@item.Id" style="cursor:pointer;">Delete</a>
             </td>
         </tr>
     }
 
 </table>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(".my-delete").on('click', function () {
+            $.ajax({
+                async: true,
+                data: { id: this.name },
+                type: "POST",
+                url: '/Order/Delete',
+                success: function (isSuccess) {
+                    if (isSuccess) {
+                        window.location.reload();
+                    }
+                },
+                error: function () {
+                    alert("error");
+                }
+            });
+        });
+    </script>
+}

@@ -119,26 +119,8 @@ namespace WholesaleStore.Controllers
             return View(supplier);
         }
 
-        public async Task<ActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-
-            var supplier = await _dataExecutor.FirstOrDefaultAsync(_dataBaseManager.SupplierRepository.Query, x => x.Id == id);
-
-            if (supplier == null)
-            {
-                return HttpNotFound();
-            }
-
-            return View(supplier);
-        }
-
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed(int id)
+        [HttpPost]
+        public async Task<bool> Delete(int id)
         {
             var supplier = await _dataExecutor.FirstOrDefaultAsync(_dataBaseManager.SupplierRepository.Query, x => x.Id == id);
 
@@ -146,7 +128,7 @@ namespace WholesaleStore.Controllers
 
             await _dataBaseManager.SupplierRepository.CommitAsync();
 
-            return RedirectToAction("Index");
+            return true;
         }
 
         protected override void Dispose(bool disposing)

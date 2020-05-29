@@ -26,7 +26,7 @@ namespace WholesaleStore.Controllers
 
         public ActionResult Create()
         {
-            ViewBag.OrderId = new SelectList(_dataBaseManager.OrderRepository.Query, "Id", "Id");
+            ViewBag.OrderId = new SelectList(_dataBaseManager.OrderRepository.Query, "Id", "Number");
             ViewBag.ProductId = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "FullName");
             
             return View();
@@ -45,7 +45,7 @@ namespace WholesaleStore.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.OrderId = new SelectList(_dataBaseManager.OrderRepository.Query, "Id", "Id", orderContent.OrderId);
+            ViewBag.OrderId = new SelectList(_dataBaseManager.OrderRepository.Query, "Id", "Number", orderContent.OrderId);
             ViewBag.ProductId = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "Name", orderContent.ProductId);
             
             return View(orderContent);
@@ -65,7 +65,7 @@ namespace WholesaleStore.Controllers
                 return HttpNotFound();
             }
             
-            ViewBag.OrderId = new SelectList(_dataBaseManager.OrderRepository.Query, "Id", "Id", orderContent.OrderId);
+            ViewBag.OrderId = new SelectList(_dataBaseManager.OrderRepository.Query, "Id", "Number", orderContent.OrderId);
             ViewBag.ProductId = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "Name", orderContent.ProductId);
             
             return View(orderContent);
@@ -88,32 +88,14 @@ namespace WholesaleStore.Controllers
                 return RedirectToAction("Index");
             }
             
-            ViewBag.OrderId = new SelectList(_dataBaseManager.OrderRepository.Query, "Id", "Id", orderContent.OrderId);
+            ViewBag.OrderId = new SelectList(_dataBaseManager.OrderRepository.Query, "Id", "Number", orderContent.OrderId);
             ViewBag.ProductId = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "Name", orderContent.ProductId);
             
             return View(orderContent);
         }
 
-        public async Task<ActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            
-            var orderContent = await _dataExecutor.FirstOrDefaultAsync(_dataBaseManager.OrderContentRepository.Query.Include(o => o.Order).Include(o => o.Product), x => x.Id == id);
-
-            if (orderContent == null)
-            {
-                return HttpNotFound();
-            }
-            
-            return View(orderContent);
-        }
-
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed(int id)
+        [HttpPost]
+        public async Task<bool> Delete(int id)
         {
             var orderContent = await _dataExecutor.FirstOrDefaultAsync(_dataBaseManager.OrderContentRepository.Query.Include(o => o.Order).Include(o => o.Product), x => x.Id == id);
 
@@ -121,7 +103,7 @@ namespace WholesaleStore.Controllers
 
             await _dataBaseManager.OrderContentRepository.CommitAsync();
 
-            return RedirectToAction("Index");
+            return true;
         }
 
         protected override void Dispose(bool disposing)

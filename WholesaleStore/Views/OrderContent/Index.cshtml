@@ -8,13 +8,13 @@
 <table class="table">
     <tr>
         <th>
+            @Html.DisplayNameFor(model => model.Order)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Product)
+        </th>
+        <th>
             @Html.DisplayNameFor(model => model.Count)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Order.Id)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Product.Name)
         </th>
         <th></th>
     </tr>
@@ -23,19 +23,40 @@
     {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Count)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Order.Id)
+                @Html.DisplayFor(modelItem => item.Order.Number)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Product.Name)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.Count)
+            </td>
+            <td>
                 @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                <a class="my-delete" name="@item.Id" style="cursor:pointer;">Delete</a>
             </td>
         </tr>
     }
 
 </table>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(".my-delete").on('click', function () {
+            $.ajax({
+                async: true,
+                data: { id: this.name },
+                type: "POST",
+                url: '/OrderContent/Delete',
+                success: function (isSuccess) {
+                    if (isSuccess) {
+                        window.location.reload();
+                    }
+                },
+                error: function () {
+                    alert("error");
+                }
+            });
+        });
+    </script>
+}
