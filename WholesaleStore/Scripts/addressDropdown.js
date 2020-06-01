@@ -16,7 +16,7 @@ $('#CountryId').change(function () {
             regionId.append($('<option></option>').val(item.Value).text(item.Text));
         });
 
-        if (data.length === 1) {
+        if (data.length > 0) {
             $.getJSON(cityUrl, { regionId: data[0].Value }, function (data) {
                 if (!data) {
                     return;

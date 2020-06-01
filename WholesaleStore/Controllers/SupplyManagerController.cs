@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PagedList;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -23,29 +24,149 @@ namespace WholesaleStore.Controllers
 
         }
 
-        public async Task<ActionResult> Supply()
+        public async Task<ActionResult> Supply(string sortOrder, string currentFilter, string searchString, int? page)
         {
-            var supplies = await _dataExecutor.ToListAsync(
-                _dataBaseManager.SupplyRepository.Query
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
+            ViewBag.StatusSortParm = sortOrder == "Status" ? "status_desc" : "Status";
+            ViewBag.EmployeeSortParm = sortOrder == "Employee" ? "employee_desc" : "Employee";
+            ViewBag.SupplierSortParm = sortOrder == "Supplier" ? "supplier_desc" : "Supplier";
+            ViewBag.NumberSortParm = sortOrder == "Number" ? "number_desc" : "Number";
+
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
+            var suppliesQuery = _dataBaseManager.SupplyRepository.Query
                 .Include(s => s.Employee)
                 .Include(s => s.Supplier)
-                .Include($"{nameof(WholesaleStore.Supply.SupplyContents)}.{nameof(SupplyContent.Product)}")
-                );
+                .Include($"{nameof(WholesaleStore.Supply.SupplyContents)}.{nameof(SupplyContent.Product)}");
 
-            return View(supplies);
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                suppliesQuery = suppliesQuery.Where(x => x.Supplier.CompanyName.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "Date":
+                    suppliesQuery = suppliesQuery.OrderBy(s => s.Date);
+                    break;
+                case "date_desc":
+                    suppliesQuery = suppliesQuery.OrderByDescending(x => x.Date);
+                    break;
+                case "Status":
+                    suppliesQuery = suppliesQuery.OrderBy(x => x.Status);
+                    break;
+                case "status_desc":
+                    suppliesQuery = suppliesQuery.OrderByDescending(x => x.Status);
+                    break;
+                case "Supplier":
+                    suppliesQuery = suppliesQuery.OrderBy(x => x.Supplier.CompanyName);
+                    break;
+                case "supplier_desc":
+                    suppliesQuery = suppliesQuery.OrderByDescending(x => x.Supplier.CompanyName);
+                    break;
+                case "Employee":
+                    suppliesQuery = suppliesQuery.OrderBy(x => x.Employee.FirstName).ThenBy(x => x.Employee.LastName);
+                    break;
+                case "employee_desc":
+                    suppliesQuery = suppliesQuery.OrderByDescending(x => x.Employee.FirstName).ThenByDescending(x => x.Employee.LastName);
+                    break;
+                case "Number":
+                    suppliesQuery = suppliesQuery.OrderBy(x => x.Number);
+                    break;
+                case "number_desc":
+                    suppliesQuery = suppliesQuery.OrderByDescending(x => x.Number);
+                    break;
+            }
+
+            var supplies = await _dataExecutor.ToListAsync(suppliesQuery);
+
+            int pageSize = 7;
+            int pageNumber = (page ?? 1);
+
+            return View(supplies.ToPagedList(pageNumber, pageSize));
         }
 
-        public async Task<ActionResult> Shipment()
+        public async Task<ActionResult> Shipment(string sortOrder, string currentFilter, string searchString, int? page)
         {
-            var supplies = await _dataExecutor.ToListAsync(
-                _dataBaseManager.SupplyRepository.Query
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
+            ViewBag.StatusSortParm = sortOrder == "Status" ? "status_desc" : "Status";
+            ViewBag.EmployeeSortParm = sortOrder == "Employee" ? "employee_desc" : "Employee";
+            ViewBag.SupplierSortParm = sortOrder == "Supplier" ? "supplier_desc" : "Supplier";
+            ViewBag.NumberSortParm = sortOrder == "Number" ? "number_desc" : "Number";
+
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
+            var suppliesQuery = _dataBaseManager.SupplyRepository.Query
                 .Include(s => s.Employee)
                 .Include(s => s.Supplier)
                 .Include($"{nameof(WholesaleStore.Supply.SupplyContents)}.{nameof(SupplyContent.Product)}")
-                .Include($"{nameof(WholesaleStore.Supply.SupplyContents)}.{nameof(SupplyContent.SupplyShipments)}")
-                );
+                .Include($"{nameof(WholesaleStore.Supply.SupplyContents)}.{nameof(SupplyContent.SupplyShipments)}");
 
-            return View(supplies);
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                suppliesQuery = suppliesQuery.Where(x => x.Supplier.CompanyName.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "Date":
+                    suppliesQuery = suppliesQuery.OrderBy(s => s.Date);
+                    break;
+                case "date_desc":
+                    suppliesQuery = suppliesQuery.OrderByDescending(x => x.Date);
+                    break;
+                case "Status":
+                    suppliesQuery = suppliesQuery.OrderBy(x => x.Status);
+                    break;
+                case "status_desc":
+                    suppliesQuery = suppliesQuery.OrderByDescending(x => x.Status);
+                    break;
+                case "Supplier":
+                    suppliesQuery = suppliesQuery.OrderBy(x => x.Supplier.CompanyName);
+                    break;
+                case "supplier_desc":
+                    suppliesQuery = suppliesQuery.OrderByDescending(x => x.Supplier.CompanyName);
+                    break;
+                case "Employee":
+                    suppliesQuery = suppliesQuery.OrderBy(x => x.Employee.FirstName).ThenBy(x => x.Employee.LastName);
+                    break;
+                case "employee_desc":
+                    suppliesQuery = suppliesQuery.OrderByDescending(x => x.Employee.FirstName).ThenByDescending(x => x.Employee.LastName);
+                    break;
+                case "Number":
+                    suppliesQuery = suppliesQuery.OrderBy(x => x.Number);
+                    break;
+                case "number_desc":
+                    suppliesQuery = suppliesQuery.OrderByDescending(x => x.Number);
+                    break;
+            }
+
+            var supplies = await _dataExecutor.ToListAsync(suppliesQuery);
+
+            int pageSize = 7;
+            int pageNumber = (page ?? 1);
+
+            return View(supplies.ToPagedList(pageNumber, pageSize));
         }
 
         public ActionResult CreateSupply()

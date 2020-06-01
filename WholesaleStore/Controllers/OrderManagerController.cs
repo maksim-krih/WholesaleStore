@@ -24,31 +24,161 @@ namespace WholesaleStore.Controllers
 
         }
 
-        public async Task<ActionResult> Order()
+        public async Task<ActionResult> Order(string sortOrder, string currentFilter, string searchString, int? page)
         {
-            var orders = await _dataExecutor.ToListAsync(
-                _dataBaseManager.OrderRepository.Query
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.PriceSortParm = sortOrder == "Price" ? "price_desc" : "Price";
+            ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
+            ViewBag.StatusSortParm = sortOrder == "Status" ? "status_desc" : "Status";
+            ViewBag.EmployeeSortParm = sortOrder == "Employee" ? "employee_desc" : "Employee";
+            ViewBag.ClientSortParm = sortOrder == "Client" ? "client_desc" : "Client";
+            ViewBag.NumberSortParm = sortOrder == "Number" ? "number_desc" : "Number";
+
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
+            var ordersQuery =  _dataBaseManager.OrderRepository.Query
                 .Include(x => x.Address.City.Region.Country)
                 .Include(o => o.Client)
                 .Include(o => o.Employee)
-                .Include($"{nameof(WholesaleStore.Order.OrderContents)}.{nameof(OrderContent.Product)}")
-                );
+                .Include($"{nameof(WholesaleStore.Order.OrderContents)}.{nameof(OrderContent.Product)}");
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                ordersQuery = ordersQuery.Where(x => x.Client.LastName.Contains(searchString)
+                                       || x.Client.FirstName.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "price_desc":
+                    ordersQuery = ordersQuery.OrderByDescending(x => x.TotalPrice);
+                    break;
+                case "Date":
+                    ordersQuery = ordersQuery.OrderBy(s => s.Date);
+                    break;
+                case "date_desc":
+                    ordersQuery = ordersQuery.OrderByDescending(x => x.Date);
+                    break;
+                case "Price":
+                    ordersQuery = ordersQuery.OrderBy(x => x.TotalPrice);
+                    break;
+                case "Status":
+                    ordersQuery = ordersQuery.OrderBy(x => x.Status);
+                    break;
+                case "status_desc":
+                    ordersQuery = ordersQuery.OrderByDescending(x => x.Status);
+                    break;
+                case "Client":
+                    ordersQuery = ordersQuery.OrderBy(x => x.Client.FirstName).ThenBy(x => x.Client.LastName);
+                    break;
+                case "client_desc":
+                    ordersQuery = ordersQuery.OrderByDescending(x => x.Client.FirstName).ThenByDescending(x => x.Client.LastName);
+                    break;
+                case "Employee":
+                    ordersQuery = ordersQuery.OrderBy(x => x.Employee.FirstName).ThenBy(x => x.Employee.LastName);
+                    break;
+                case "employee_desc":
+                    ordersQuery = ordersQuery.OrderByDescending(x => x.Employee.FirstName).ThenByDescending(x => x.Employee.LastName);
+                    break;
+                case "Number":
+                    ordersQuery = ordersQuery.OrderBy(x => x.Number);
+                    break;
+                case "number_desc":
+                    ordersQuery = ordersQuery.OrderByDescending(x => x.Number);
+                    break;
+            }
+
+            var orders = await _dataExecutor.ToListAsync(ordersQuery);
 
             int pageSize = 7;
-            int pageNumber = 1;
+            int pageNumber = (page ?? 1);
 
             return View(orders.ToPagedList(pageNumber, pageSize));
         }
 
-        public async Task<ActionResult> Delivery()
+        public async Task<ActionResult> Delivery(string sortOrder, string currentFilter, string searchString, int? page)
         {
-            var orders = await _dataExecutor.ToListAsync(
-                _dataBaseManager.OrderRepository.Query
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.PriceSortParm = sortOrder == "Price" ? "price_desc" : "Price";
+            ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
+            ViewBag.StatusSortParm = sortOrder == "Status" ? "status_desc" : "Status";
+            ViewBag.EmployeeSortParm = sortOrder == "Employee" ? "employee_desc" : "Employee";
+            ViewBag.ClientSortParm = sortOrder == "Client" ? "client_desc" : "Client";
+            ViewBag.NumberSortParm = sortOrder == "Number" ? "number_desc" : "Number";
+
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
+            var ordersQuery = _dataBaseManager.OrderRepository.Query
                 .Include(x => x.Address.City.Region.Country)
                 .Include(o => o.Client)
                 .Include(o => o.Employee)
-                .Include($"{nameof(WholesaleStore.Order.OrderContents)}.{nameof(OrderContent.Product)}")
-                );
+                .Include($"{nameof(WholesaleStore.Order.OrderContents)}.{nameof(OrderContent.Product)}");
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                ordersQuery = ordersQuery.Where(x => x.Client.LastName.Contains(searchString)
+                    || x.Client.FirstName.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "price_desc":
+                    ordersQuery = ordersQuery.OrderByDescending(x => x.TotalPrice);
+                    break;
+                case "Date":
+                    ordersQuery = ordersQuery.OrderBy(s => s.Date);
+                    break;
+                case "date_desc":
+                    ordersQuery = ordersQuery.OrderByDescending(x => x.Date);
+                    break;
+                case "Price":
+                    ordersQuery = ordersQuery.OrderBy(x => x.TotalPrice);
+                    break;
+                case "Status":
+                    ordersQuery = ordersQuery.OrderBy(x => x.Status);
+                    break;
+                case "status_desc":
+                    ordersQuery = ordersQuery.OrderByDescending(x => x.Status);
+                    break;
+                case "Client":
+                    ordersQuery = ordersQuery.OrderBy(x => x.Client.FirstName).ThenBy(x => x.Client.LastName);
+                    break;
+                case "client_desc":
+                    ordersQuery = ordersQuery.OrderByDescending(x => x.Client.FirstName).ThenByDescending(x => x.Client.LastName);
+                    break;
+                case "Employee":
+                    ordersQuery = ordersQuery.OrderBy(x => x.Employee.FirstName).ThenBy(x => x.Employee.LastName);
+                    break;
+                case "employee_desc":
+                    ordersQuery = ordersQuery.OrderByDescending(x => x.Employee.FirstName).ThenByDescending(x => x.Employee.LastName);
+                    break;
+                case "Number":
+                    ordersQuery = ordersQuery.OrderBy(x => x.Number);
+                    break;
+                case "number_desc":
+                    ordersQuery = ordersQuery.OrderByDescending(x => x.Number);
+                    break;
+            }
+
+            var orders = await _dataExecutor.ToListAsync(ordersQuery);
 
             var orderDtos = orders.Select(x => new OrderDto
             {
@@ -75,7 +205,10 @@ namespace WholesaleStore.Controllers
                 Id = x.Id
             });
 
-            return View(orderDtos);
+            int pageSize = 7;
+            int pageNumber = (page ?? 1);
+
+            return View(orderDtos.ToPagedList(pageNumber, pageSize));
         }
 
         public ActionResult CreateOrder()

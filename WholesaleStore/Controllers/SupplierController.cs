@@ -1,4 +1,7 @@
-﻿using System.Data.Entity;
+﻿using PagedList;
+using System;
+using System.Data.Entity;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -19,11 +22,46 @@ namespace WholesaleStore.Controllers
 
         }
 
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
-            var suppliers = await _dataExecutor.ToListAsync(_dataBaseManager.SupplierRepository.Query.Include(x => x.Address.City.Region.Country));
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.CompanyNameSortParm = sortOrder == "CompanyName" ? "companyName_desc" : "CompanyName";
 
-            return View(suppliers);
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
+            var suppliersQuery = _dataBaseManager.SupplierRepository.Query
+                .Include(x => x.Address.City.Region.Country);
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                suppliersQuery = suppliersQuery.Where(x => x.CompanyName.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "companyName_desc":
+                    suppliersQuery = suppliersQuery.OrderByDescending(x => x.CompanyName);
+                    break;
+                case "CompanyName":
+                    suppliersQuery = suppliersQuery.OrderBy(s => s.CompanyName);
+                    break;
+            }
+
+            var suppliers = await _dataExecutor.ToListAsync(suppliersQuery);
+
+            int pageSize = 7;
+            int pageNumber = (page ?? 1);
+
+            return View(suppliers.ToPagedList(pageNumber, pageSize));
         }
 
         public ActionResult Create()

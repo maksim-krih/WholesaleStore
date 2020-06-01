@@ -10,28 +10,37 @@
 <p>
     @Html.ActionLink("Create New", "CreateOrder")
 </p>
+
+@using (Html.BeginForm("Order", "OrderManager", FormMethod.Get))
+{
+    <p>
+        Find client by name: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+        <input type="submit" value="Search" />
+    </p>
+}
+
 <table class="table table-hover">
     <tr>
         <th>
-            Number
+            @Html.ActionLink("Number", "Order", new { sortOrder = ViewBag.NumberSortParm, currentFilter = ViewBag.CurrentFilter })
         </th>
         <th>
-            Employee
+            @Html.ActionLink("Employee", "Order", new { sortOrder = ViewBag.EmployeeSortParm, currentFilter = ViewBag.CurrentFilter })
         </th>
         <th>
-            Client
+            @Html.ActionLink("Client", "Order", new { sortOrder = ViewBag.ClientSortParm, currentFilter = ViewBag.CurrentFilter })
         </th>
         <th>
             Address
         </th>
         <th>
-            Date
+            @Html.ActionLink("Date", "Order", new { sortOrder = ViewBag.DateSortParm, currentFilter = ViewBag.CurrentFilter })
         </th>
         <th>
-            Total Price
+            @Html.ActionLink("Total Price", "Order", new { sortOrder = ViewBag.PriceSortParm, currentFilter = ViewBag.CurrentFilter })
         </th>
         <th>
-            Status
+            @Html.ActionLink("Status", "Order", new { sortOrder = ViewBag.StatusSortParm, currentFilter = ViewBag.CurrentFilter })
         </th>
         <th></th>
     </tr>
@@ -108,7 +117,8 @@
 <br />
 Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
 
-@Html.PagedListPager(Model, page => Url.Action("Index"))
+@Html.PagedListPager(Model, page => Url.Action("Order",
+    new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
 
 @section Scripts {
     <script type="text/javascript">

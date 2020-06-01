@@ -1,4 +1,7 @@
-﻿using System.Net;
+﻿using PagedList;
+using System;
+using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using WholesaleStore.Controllers.Base;
@@ -16,11 +19,60 @@ namespace WholesaleStore.Controllers
 
         }
 
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
-            var clients = await _dataExecutor.ToListAsync(_dataBaseManager.ClientRepository.Query);
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.FirstNameSortParm = sortOrder == "FirstName" ? "firstName_desc" : "FirstName";
+            ViewBag.LastNameSortParm = sortOrder == "LastName" ? "lastName_desc" : "LastName";
+            ViewBag.EmailSortParm = sortOrder == "Email" ? "email_desc" : "Email";
 
-            return View(clients);
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
+            var clientsQuery = _dataBaseManager.ClientRepository.Query;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                clientsQuery = clientsQuery.Where(x => x.FirstName.Contains(searchString) ||
+                    x.LastName.Contains(searchString) || x.Email.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "firstName_desc":
+                    clientsQuery = clientsQuery.OrderByDescending(x => x.FirstName);
+                    break;
+                case "FirstName":
+                    clientsQuery = clientsQuery.OrderBy(s => s.FirstName);
+                    break;
+                case "lastName_desc":
+                    clientsQuery = clientsQuery.OrderByDescending(x => x.LastName);
+                    break;
+                case "LastName":
+                    clientsQuery = clientsQuery.OrderBy(s => s.LastName);
+                    break;
+                case "email_desc":
+                    clientsQuery = clientsQuery.OrderByDescending(x => x.Email);
+                    break;
+                case "Email":
+                    clientsQuery = clientsQuery.OrderBy(s => s.Email);
+                    break;
+            }
+
+            var clients = await _dataExecutor.ToListAsync(clientsQuery);
+
+            int pageSize = 7;
+            int pageNumber = (page ?? 1);
+
+            return View(clients.ToPagedList(pageNumber, pageSize));
         }
 
         public ActionResult Create()

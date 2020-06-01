@@ -1,31 +1,43 @@
 ﻿@using WholesaleStore.Common.Enums
 @using WholesaleStore.Utils
-@model IEnumerable<WholesaleStore.Models.Dtos.OrderDto>
+@using PagedList.Mvc;
+@model PagedList.IPagedList<WholesaleStore.Models.Dtos.OrderDto>
+
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
 <h2>Delivery</h2>
+
+
+@using (Html.BeginForm("Delivery", "OrderManager", FormMethod.Get))
+{
+    <p>
+        Find client by name: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+        <input type="submit" value="Search" />
+    </p>
+}
 
 <table class="table table-hover">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Number)
+            @Html.ActionLink("Number", "Delivery", new { sortOrder = ViewBag.NumberSortParm, currentFilter = ViewBag.CurrentFilter })
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Employee)
+            @Html.ActionLink("Employee", "Delivery", new { sortOrder = ViewBag.EmployeeSortParm, currentFilter = ViewBag.CurrentFilter })
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Client)
+            @Html.ActionLink("Client", "Delivery", new { sortOrder = ViewBag.ClientSortParm, currentFilter = ViewBag.CurrentFilter })
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Address)
+            Address
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Date)
+            @Html.ActionLink("Date", "Delivery", new { sortOrder = ViewBag.DateSortParm, currentFilter = ViewBag.CurrentFilter })
         </th>
         <th>
-            Total Price
+            @Html.ActionLink("Total Price", "Delivery", new { sortOrder = ViewBag.PriceSortParm, currentFilter = ViewBag.CurrentFilter })
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Status)
+            @Html.ActionLink("Status", "Delivery", new { sortOrder = ViewBag.StatusSortParm, currentFilter = ViewBag.CurrentFilter })
         </th>
         <th></th>
     </tr>
@@ -133,6 +145,12 @@
         </tr>
     }
 </table>
+
+<br />
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("Delivery",
+    new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
 
 @section Scripts {
     <script type="text/javascript">

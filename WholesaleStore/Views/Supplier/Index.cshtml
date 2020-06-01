@@ -1,20 +1,32 @@
-﻿@model IEnumerable<WholesaleStore.Supplier>
+﻿@using PagedList.Mvc;
+@model PagedList.IPagedList<WholesaleStore.Supplier>
+
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
 <h2>Supplier</h2>
 
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
+
+@using (Html.BeginForm("Index", "Supplier", FormMethod.Get))
+{
+    <p>
+        Find by name: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+        <input type="submit" value="Search" />
+    </p>
+}
+
 <table class="table">
     <tr>
         <th>
-            Company Name
+            @Html.ActionLink("Company Name", "Index", new { sortOrder = ViewBag.CompanyNameSortParm, currentFilter = ViewBag.CurrentFilter })
         </th>
         <th>
             Contact Phone
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Address)
+            Address
         </th>
         <th></th>
     </tr>
@@ -43,6 +55,13 @@
     }
 
 </table>
+
+<br />
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("Index",
+    new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
+
 
 @section Scripts {
     <script type="text/javascript">

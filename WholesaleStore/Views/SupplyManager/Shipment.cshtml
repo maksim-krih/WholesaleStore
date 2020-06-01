@@ -1,25 +1,36 @@
 ﻿@using WholesaleStore.Common.Enums
 @using WholesaleStore.Utils
-@model IEnumerable<WholesaleStore.Supply>
+@using PagedList.Mvc;
+@model PagedList.IPagedList<WholesaleStore.Supply>
+
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
 <h2>Shipment</h2>
+
+@using (Html.BeginForm("Shipment", "SupplyManager", FormMethod.Get))
+{
+    <p>
+        Find supplier by name: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+        <input type="submit" value="Search" />
+    </p>
+}
 
 <table class="table table-hover">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Number)
+            @Html.ActionLink("Number", "Shipment", new { sortOrder = ViewBag.NumberSortParm, currentFilter = ViewBag.CurrentFilter })
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Employee)
+            @Html.ActionLink("Employee", "Shipment", new { sortOrder = ViewBag.EmployeeSortParm, currentFilter = ViewBag.CurrentFilter })
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Supplier)
+            @Html.ActionLink("Supplier", "Shipment", new { sortOrder = ViewBag.SupplierSortParm, currentFilter = ViewBag.CurrentFilter })
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Status)
+            @Html.ActionLink("Status", "Shipment", new { sortOrder = ViewBag.StatusSortParm, currentFilter = ViewBag.CurrentFilter })
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Date)
+            @Html.ActionLink("Date", "Shipment", new { sortOrder = ViewBag.DateSortParm, currentFilter = ViewBag.CurrentFilter })
         </th>
         <th></th>
     </tr>
@@ -89,6 +100,12 @@
     }
 
 </table>
+
+<br />
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("Shipment",
+    new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
 
 @section Scripts {
     <script type="text/javascript">
