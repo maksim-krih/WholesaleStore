@@ -1,4 +1,7 @@
-﻿using System.Data.Entity;
+﻿using PagedList;
+using System;
+using System.Data.Entity;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -17,11 +20,62 @@ namespace WholesaleStore.Controllers
 
         }
 
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
-            var orderShipments = await _dataExecutor.ToListAsync(_dataBaseManager.OrderShipmentRepository.Query.Include(o => o.OrderContent).Include(o => o.ProductsInStorage));
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.CountSortParm = sortOrder == "Count" ? "count_desc" : "Count";
+            ViewBag.OrderContentSortParm = sortOrder == "OrderContent" ? "orderContent_desc" : "OrderContent";
+            ViewBag.ProductSortParm = sortOrder == "Product" ? "product_desc" : "Product";
 
-            return View(orderShipments);
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
+            var orderShipmentsQuery = _dataBaseManager.OrderShipmentRepository.Query
+                .Include(o => o.OrderContent).Include(o => o.ProductsInStorage);
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                orderShipmentsQuery = orderShipmentsQuery.Where(x => 
+                    x.OrderContentId.ToString().Contains(searchString) ||
+                    x.ProductInStrorageId.ToString().Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "count_desc":
+                    orderShipmentsQuery = orderShipmentsQuery.OrderByDescending(x => x.Count);
+                    break;
+                case "Count":
+                    orderShipmentsQuery = orderShipmentsQuery.OrderBy(s => s.Count);
+                    break;
+                case "orderContent_desc":
+                    orderShipmentsQuery = orderShipmentsQuery.OrderByDescending(x => x.OrderContentId);
+                    break;
+                case "OrderContent":
+                    orderShipmentsQuery = orderShipmentsQuery.OrderBy(s => s.OrderContentId);
+                    break;
+                case "product_desc":
+                    orderShipmentsQuery = orderShipmentsQuery.OrderByDescending(x => x.ProductInStrorageId);
+                    break;
+                case "Product":
+                    orderShipmentsQuery = orderShipmentsQuery.OrderBy(s => s.ProductInStrorageId);
+                    break;
+            }
+
+            var orderShipments = await _dataExecutor.ToListAsync(orderShipmentsQuery);
+
+            int pageSize = 7;
+            int pageNumber = (page ?? 1);
+
+            return View(orderShipments.ToPagedList(pageNumber, pageSize));
         }
 
         public ActionResult Create()

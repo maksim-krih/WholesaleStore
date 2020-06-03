@@ -153,6 +153,16 @@ namespace WholesaleStore.Controllers
             {
                 var entity = await _dataExecutor.FirstOrDefaultAsync(_dataBaseManager.ProductRepository.Query, x => x.Id == product.Id);
 
+                if (entity.SupplyContents.Any() && entity.SupplyContents.Average(x => x.SupplyPrice) * 2 < product.PackagePrice)
+                {
+                    ModelState.AddModelError("", "Price cant be larger than 2 times as supply price");
+
+                    ViewBag.BrandId = new SelectList(_dataBaseManager.BrandRepository.Query, "Id", "Name", product.BrandId);
+                    ViewBag.ProductTypeId = new SelectList(_dataBaseManager.ProductTypeRepository.Query, "Id", "Name", product.ProductTypeId);
+
+                    return View(product);
+                }
+
                 entity.Code = product.Code;
                 entity.ProductTypeId = product.ProductTypeId;
                 entity.BrandId = product.BrandId;

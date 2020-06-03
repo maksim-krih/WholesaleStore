@@ -1,4 +1,7 @@
-﻿using System.Data.Entity;
+﻿using PagedList;
+using System;
+using System.Data.Entity;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -21,15 +24,83 @@ namespace WholesaleStore.Controllers
 
         }
 
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
-            var employees = await _dataExecutor.ToListAsync(
-                _dataBaseManager.EmployeeRepository.Query
-                .Include(x => x.Address.City.Region.Country)
-                .Include(e => e.Position)
-                );
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.FirstNameSortParm = sortOrder == "FirstName" ? "firstName_desc" : "FirstName";
+            ViewBag.LastNameSortParm = sortOrder == "LastName" ? "lastName_desc" : "LastName";
+            ViewBag.EmailSortParm = sortOrder == "Email" ? "email_desc" : "Email";
+            ViewBag.LoginSortParm = sortOrder == "Login" ? "login_desc" : "Login";
+            ViewBag.PasswordSortParm = sortOrder == "Password" ? "password_desc" : "Password";
+            ViewBag.PositionSortParm = sortOrder == "Position" ? "position_desc" : "Position";
 
-            return View(employees);
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
+            var employeesQuery = _dataBaseManager.EmployeeRepository.Query
+                .Include(x => x.Address.City.Region.Country)
+                .Include(e => e.Position);
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                employeesQuery = employeesQuery.Where(x => x.FirstName.Contains(searchString) ||
+                    x.LastName.Contains(searchString) || x.Email.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "firstName_desc":
+                    employeesQuery = employeesQuery.OrderByDescending(x => x.FirstName);
+                    break;
+                case "FirstName":
+                    employeesQuery = employeesQuery.OrderBy(s => s.FirstName);
+                    break;
+                case "lastName_desc":
+                    employeesQuery = employeesQuery.OrderByDescending(x => x.LastName);
+                    break;
+                case "LastName":
+                    employeesQuery = employeesQuery.OrderBy(s => s.LastName);
+                    break;
+                case "email_desc":
+                    employeesQuery = employeesQuery.OrderByDescending(x => x.Email);
+                    break;
+                case "Email":
+                    employeesQuery = employeesQuery.OrderBy(s => s.Email);
+                    break;
+                case "login_desc":
+                    employeesQuery = employeesQuery.OrderByDescending(x => x.Login);
+                    break;
+                case "Login":
+                    employeesQuery = employeesQuery.OrderBy(s => s.Login);
+                    break;
+                case "password_desc":
+                    employeesQuery = employeesQuery.OrderByDescending(x => x.Password);
+                    break;
+                case "Password":
+                    employeesQuery = employeesQuery.OrderBy(s => s.Password);
+                    break;
+                case "position_desc":
+                    employeesQuery = employeesQuery.OrderByDescending(x => x.Position.Name);
+                    break;
+                case "Position":
+                    employeesQuery = employeesQuery.OrderBy(s => s.Position.Name);
+                    break;
+            }
+
+            var employees = await _dataExecutor.ToListAsync(employeesQuery);
+
+            int pageSize = 7;
+            int pageNumber = (page ?? 1);
+
+            return View(employees.ToPagedList(pageNumber, pageSize));
         }
 
         public ActionResult Create()

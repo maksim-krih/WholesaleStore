@@ -1,20 +1,32 @@
-﻿@model IEnumerable<WholesaleStore.ProductsInStorage>
+﻿@using PagedList.Mvc;
+@model PagedList.IPagedList<WholesaleStore.ProductsInStorage>
+
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
 <h2>Products In Storage</h2>
 
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
+
+@using (Html.BeginForm("Index", "ProductsInStorage", FormMethod.Get))
+{
+    <p>
+        Find: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+        <input type="submit" value="Search" />
+    </p>
+}
+
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Amount)
+            @Html.ActionLink("Amount", "Index", new { sortOrder = ViewBag.AmountSortParm, currentFilter = ViewBag.CurrentFilter })
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Product)
+            @Html.ActionLink("Product", "Index", new { sortOrder = ViewBag.ProductSortParm, currentFilter = ViewBag.CurrentFilter })
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Storage)
+            @Html.ActionLink("Storage", "Index", new { sortOrder = ViewBag.StorageSortParm, currentFilter = ViewBag.CurrentFilter })
         </th>
         <th></th>
     </tr>
@@ -39,6 +51,12 @@
     }
 
 </table>
+
+<br />
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("Index",
+    new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
 
 @section Scripts {
     <script type="text/javascript">

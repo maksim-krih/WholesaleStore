@@ -1,4 +1,7 @@
-﻿using System.Data.Entity;
+﻿using PagedList;
+using System;
+using System.Data.Entity;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -17,11 +20,52 @@ namespace WholesaleStore.Controllers
 
         }
 
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
-            var brands = await _dataExecutor.ToListAsync(_dataBaseManager.BrandRepository.Query.Include(b => b.Country));
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.NameSortParm = sortOrder == "Name" ? "name_desc" : "Name";
+            ViewBag.CountrySortParm = sortOrder == "Country" ? "country_desc" : "Country";
 
-            return View(brands);
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
+            var brandsQuery = _dataBaseManager.BrandRepository.Query.Include(b => b.Country);
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                brandsQuery = brandsQuery.Where(x => x.Name.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    brandsQuery = brandsQuery.OrderByDescending(x => x.Name);
+                    break;
+                case "Name":
+                    brandsQuery = brandsQuery.OrderBy(s => s.Name);
+                    break;
+                case "country_desc":
+                    brandsQuery = brandsQuery.OrderByDescending(x => x.Country.Name);
+                    break;
+                case "Country":
+                    brandsQuery = brandsQuery.OrderBy(s => s.Country.Name);
+                    break;
+            }
+
+            var brands = await _dataExecutor.ToListAsync(brandsQuery);
+
+            int pageSize = 7;
+            int pageNumber = (page ?? 1);
+
+            return View(brands.ToPagedList(pageNumber, pageSize));
         }
 
         public ActionResult Create()

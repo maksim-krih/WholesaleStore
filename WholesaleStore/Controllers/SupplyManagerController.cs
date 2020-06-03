@@ -198,7 +198,7 @@ namespace WholesaleStore.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(SupplyDto supplyDto)
+        public async Task<ActionResult> CreateSupply(SupplyDto supplyDto)
         {
             if (ModelState.IsValid)
             {
@@ -361,13 +361,25 @@ namespace WholesaleStore.Controllers
         [HttpPost]
         public async Task<bool> CloseShipment(int? id)
         {
-            var order = await _dataExecutor.FirstOrDefaultAsync(
+            var supply = await _dataExecutor.FirstOrDefaultAsync(
                 _dataBaseManager.SupplyRepository.Query
-                .Include(s => s.Employee)
-                .Include(s => s.Supplier),
+                .Include($"{nameof(WholesaleStore.Supply.SupplyContents)}.{nameof(SupplyContent.SupplyShipments)}.{nameof(SupplyShipment.ProductsInStorage)}"),
                 x => x.Id == id);
 
-            order.Status = (int)SupplyStatus.Delivered;
+            foreach (var supplyContent in supply.SupplyContents)
+            {
+                var supplyShipment = supplyContent.SupplyShipments.FirstOrDefault();
+
+                var productInStorage = await _dataExecutor.FirstOrDefaultAsync(
+                _dataBaseManager.ProductsInStorageRepository.Query,
+                x => x.ProductId == supplyShipment.ProductsInStorage.ProductId && x.StorageId == supplyShipment.ProductsInStorage.StorageId);
+
+                productInStorage.Amount += supplyContent.Count;
+
+                await _dataBaseManager.ProductsInStorageRepository.CommitAsync();
+            }
+
+            supply.Status = (int)SupplyStatus.Delivered;
 
             await _dataBaseManager.SupplyRepository.CommitAsync();
 

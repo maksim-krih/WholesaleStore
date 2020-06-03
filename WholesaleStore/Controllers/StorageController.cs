@@ -1,4 +1,7 @@
-﻿using System.Data.Entity;
+﻿using PagedList;
+using System;
+using System.Data.Entity;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -19,11 +22,47 @@ namespace WholesaleStore.Controllers
 
         }
 
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
-            var storages = await _dataExecutor.ToListAsync(_dataBaseManager.StorageRepository.Query.Include(x => x.Address.City.Region.Country));
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.NumberSortParm = sortOrder == "Number" ? "number_desc" : "Number";
 
-            return View(storages);
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
+            var storagesQuery = _dataBaseManager.StorageRepository.Query
+                .Include(x => x.Address.City.Region.Country);
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                storagesQuery = storagesQuery.Where(x => 
+                x.Number.ToString().Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "number_desc":
+                    storagesQuery = storagesQuery.OrderByDescending(x => x.Number);
+                    break;
+                case "Number":
+                    storagesQuery = storagesQuery.OrderBy(s => s.Number);
+                    break;
+            }
+
+            var storages = await _dataExecutor.ToListAsync(storagesQuery);
+
+            int pageSize = 7;
+            int pageNumber = (page ?? 1);
+
+            return View(storages.ToPagedList(pageNumber, pageSize));
         }
 
         public ActionResult Create()

@@ -242,11 +242,25 @@ namespace WholesaleStore.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(OrderDto orderDto)
+        public async Task<ActionResult> CreateOrder(OrderDto orderDto)
         {
             if (ModelState.IsValid)
             {
                 var products = await _dataExecutor.ToListAsync(_dataBaseManager.ProductRepository.Query);
+
+                if (orderDto.OrderContents.Any(x => x.Count > 2000))
+                {
+                    ModelState.AddModelError("", "You ordered more than 2000 units");
+
+                    orderDto.ProductList = new SelectList(_dataBaseManager.ProductRepository.Query, "Id", "FullName");
+
+                    AddressHelper.ConfigureDto(_dataBaseManager, orderDto);
+
+                    ViewBag.ClientId = new SelectList(_dataBaseManager.ClientRepository.Query, "Id", "FullName", orderDto.ClientId);
+                    ViewBag.EmployeeId = new SelectList(_dataBaseManager.EmployeeRepository.Query, "Id", "FullName", orderDto.EmployeeId);
+
+                    return View(orderDto);
+                }
 
                 var order = new Order
                 {
@@ -450,6 +464,11 @@ namespace WholesaleStore.Controllers
                 .Include(o => o.Employee),
                 x => x.Id == id
             );
+
+            foreach (var orderContent in order.OrderContents)
+            {
+                orderContent.OrderShipments.FirstOrDefault().ProductsInStorage.Amount -= orderContent.Count;
+            }
 
             var orderDeliveries = order.OrderDeliveries.FirstOrDefault();
 

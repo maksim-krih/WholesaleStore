@@ -1,4 +1,7 @@
-﻿using System.Net;
+﻿using PagedList;
+using System;
+using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using WholesaleStore.Controllers.Base;
@@ -16,11 +19,45 @@ namespace WholesaleStore.Controllers
 
         }
 
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
-            var productTypes = await _dataExecutor.ToListAsync(_dataBaseManager.ProductTypeRepository.Query);
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.NameSortParm = sortOrder == "Name" ? "name_desc" : "Name";
 
-            return View(productTypes);
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
+            var productTypesQuery = _dataBaseManager.ProductTypeRepository.Query;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                productTypesQuery = productTypesQuery.Where(x => x.Name.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    productTypesQuery = productTypesQuery.OrderByDescending(x => x.Name);
+                    break;
+                case "Name":
+                    productTypesQuery = productTypesQuery.OrderBy(s => s.Name);
+                    break;
+            }
+
+            var productTypes = await _dataExecutor.ToListAsync(productTypesQuery);
+
+            int pageSize = 7;
+            int pageNumber = (page ?? 1);
+
+            return View(productTypes.ToPagedList(pageNumber, pageSize));
         }
 
         public ActionResult Create()

@@ -1,4 +1,7 @@
-﻿using System.Data.Entity;
+﻿using PagedList;
+using System;
+using System.Data.Entity;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -17,15 +20,72 @@ namespace WholesaleStore.Controllers
 
         }
 
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
-            var supplyShipments = await _dataExecutor.ToListAsync(
-                _dataBaseManager.SupplyShipmentRepository.Query
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.EmployeeSortParm = sortOrder == "Employee" ? "employee_desc" : "Employee";
+            ViewBag.CountSortParm = sortOrder == "Count" ? "count_desc" : "Count";
+            ViewBag.ProductSortParm = sortOrder == "Product" ? "product_desc" : "Product";
+            ViewBag.SupplySortParm = sortOrder == "Supply" ? "supply_desc" : "Supply";
+
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
+            var supplyShipmentsQuery = _dataBaseManager.SupplyShipmentRepository.Query
                 .Include(s => s.Employee)
                 .Include(s => s.ProductsInStorage)
-                .Include(s => s.SupplyContent));
+                .Include(s => s.SupplyContent);
 
-            return View(supplyShipments);
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                supplyShipmentsQuery = supplyShipmentsQuery.Where(x =>
+                x.Employee.FirstName.Contains(searchString) ||
+                x.Employee.LastName.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "employee_desc":
+                    supplyShipmentsQuery = supplyShipmentsQuery.OrderByDescending(x => x.Employee.FirstName).ThenByDescending(x => x.Employee.LastName);
+                    break;
+                case "Employee":
+                    supplyShipmentsQuery = supplyShipmentsQuery.OrderBy(s => s.Employee.FirstName).ThenBy(x => x.Employee.LastName);
+                    break;
+                case "count_desc":
+                    supplyShipmentsQuery = supplyShipmentsQuery.OrderByDescending(x => x.Count);
+                    break;
+                case "Count":
+                    supplyShipmentsQuery = supplyShipmentsQuery.OrderBy(s => s.Count);
+                    break;
+                case "product_desc":
+                    supplyShipmentsQuery = supplyShipmentsQuery.OrderByDescending(x => x.ProductInStorageId);
+                    break;
+                case "Product":
+                    supplyShipmentsQuery = supplyShipmentsQuery.OrderBy(s => s.ProductInStorageId);
+                    break;
+                case "supply_desc":
+                    supplyShipmentsQuery = supplyShipmentsQuery.OrderByDescending(x => x.SupplyContentId);
+                    break;
+                case "Supply":
+                    supplyShipmentsQuery = supplyShipmentsQuery.OrderBy(s => s.SupplyContentId);
+                    break;
+            }
+                    
+            var supplyShipments = await _dataExecutor.ToListAsync(supplyShipmentsQuery);
+
+            int pageSize = 7;
+            int pageNumber = (page ?? 1);
+
+            return View(supplyShipments.ToPagedList(pageNumber, pageSize));
         }
 
         public ActionResult Create()

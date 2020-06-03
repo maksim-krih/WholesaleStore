@@ -1,4 +1,7 @@
-﻿using System.Data.Entity;
+﻿using PagedList;
+using System;
+using System.Data.Entity;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -17,11 +20,69 @@ namespace WholesaleStore.Controllers
 
         }
 
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
-            var supplyContents = await _dataExecutor.ToListAsync(_dataBaseManager.SupplyContentRepository.Query.Include(s => s.Product).Include(s => s.Supply));
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.SupplySortParm = sortOrder == "Supply" ? "supply_desc" : "Supply";
+            ViewBag.ProductSortParm = sortOrder == "Product" ? "product_desc" : "Product";
+            ViewBag.CountSortParm = sortOrder == "Count" ? "count_desc" : "Count";
+            ViewBag.PriceSortParm = sortOrder == "Price" ? "price_desc" : "Price";
 
-            return View(supplyContents);
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
+            var supplyContentsQuery = _dataBaseManager.SupplyContentRepository.Query
+                .Include(s => s.Product).Include(s => s.Supply);
+
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                supplyContentsQuery = supplyContentsQuery.Where(x => x.Product.Name.Contains(searchString) ||
+                    x.Product.Code.ToString().Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "supply_desc":
+                    supplyContentsQuery = supplyContentsQuery.OrderByDescending(x => x.Supply.Number);
+                    break;
+                case "Supply":
+                    supplyContentsQuery = supplyContentsQuery.OrderBy(s => s.Supply.Number);
+                    break;
+                case "product_desc":
+                    supplyContentsQuery = supplyContentsQuery.OrderByDescending(x => x.Product.Code);
+                    break;
+                case "Product":
+                    supplyContentsQuery = supplyContentsQuery.OrderBy(s => s.Product.Code);
+                    break;
+                case "count_desc":
+                    supplyContentsQuery = supplyContentsQuery.OrderByDescending(x => x.Count);
+                    break;
+                case "Count":
+                    supplyContentsQuery = supplyContentsQuery.OrderBy(s => s.Count);
+                    break;
+                case "price_desc":
+                    supplyContentsQuery = supplyContentsQuery.OrderByDescending(x => x.SupplyPrice);
+                    break;
+                case "Price":
+                    supplyContentsQuery = supplyContentsQuery.OrderBy(s => s.SupplyPrice);
+                    break;
+            }
+
+            var supplyContents = await _dataExecutor.ToListAsync(supplyContentsQuery);
+
+            int pageSize = 7;
+            int pageNumber = (page ?? 1);
+
+            return View(supplyContents.ToPagedList(pageNumber, pageSize));
         }
 
         public ActionResult Create()

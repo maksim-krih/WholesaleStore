@@ -1,4 +1,7 @@
-﻿using System.Data.Entity;
+﻿using PagedList;
+using System;
+using System.Data.Entity;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -17,11 +20,61 @@ namespace WholesaleStore.Controllers
 
         }
 
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
-            var orderContents = await _dataExecutor.ToListAsync(_dataBaseManager.OrderContentRepository.Query.Include(o => o.Order).Include(o => o.Product));
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.OrderSortParm = sortOrder == "Order" ? "order_desc" : "Order";
+            ViewBag.ProductSortParm = sortOrder == "Product" ? "product_desc" : "Product";
+            ViewBag.CountSortParm = sortOrder == "Count" ? "count_desc" : "Count";
 
-            return View(orderContents);
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
+            var orderContentsQuery = _dataBaseManager.OrderContentRepository.Query
+                .Include(o => o.Order).Include(o => o.Product);
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                orderContentsQuery = orderContentsQuery.Where(x => x.Product.Name.Contains(searchString) ||
+                    x.Product.Code.ToString().Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "order_desc":
+                    orderContentsQuery = orderContentsQuery.OrderByDescending(x => x.Order.Number);
+                    break;
+                case "Order":
+                    orderContentsQuery = orderContentsQuery.OrderBy(s => s.Order.Number);
+                    break;
+                case "product_desc":
+                    orderContentsQuery = orderContentsQuery.OrderByDescending(x => x.Product.Code);
+                    break;
+                case "Product":
+                    orderContentsQuery = orderContentsQuery.OrderBy(s => s.Product.Code);
+                    break;
+                case "count_desc":
+                    orderContentsQuery = orderContentsQuery.OrderByDescending(x => x.Count);
+                    break;
+                case "Count":
+                    orderContentsQuery = orderContentsQuery.OrderBy(s => s.Count);
+                    break;
+            }
+
+            var orderContents = await _dataExecutor.ToListAsync(orderContentsQuery);
+
+            int pageSize = 7;
+            int pageNumber = (page ?? 1);
+
+            return View(orderContents.ToPagedList(pageNumber, pageSize));
         }
 
         public ActionResult Create()

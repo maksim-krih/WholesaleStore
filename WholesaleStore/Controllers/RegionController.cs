@@ -1,4 +1,7 @@
-﻿using System.Data.Entity;
+﻿using PagedList;
+using System;
+using System.Data.Entity;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -19,11 +22,52 @@ namespace WholesaleStore.Controllers
 
         }
 
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
-            var regions = await _dataExecutor.ToListAsync(_dataBaseManager.RegionRepository.Query.Include(b => b.Country));
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.NameSortParm = sortOrder == "Name" ? "name_desc" : "Name";
+            ViewBag.CountrySortParm = sortOrder == "Country" ? "country_desc" : "Country";
 
-            return View(regions);
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
+            var regionsQuery = _dataBaseManager.RegionRepository.Query.Include(b => b.Country);
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                regionsQuery = regionsQuery.Where(x => x.Name.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    regionsQuery = regionsQuery.OrderByDescending(x => x.Name);
+                    break;
+                case "Name":
+                    regionsQuery = regionsQuery.OrderBy(s => s.Name);
+                    break;
+                case "country_desc":
+                    regionsQuery = regionsQuery.OrderByDescending(x => x.Country.Name);
+                    break;
+                case "Country":
+                    regionsQuery = regionsQuery.OrderBy(s => s.Country.Name);
+                    break;
+            }
+
+            var regions = await _dataExecutor.ToListAsync(regionsQuery);
+
+            int pageSize = 7;
+            int pageNumber = (page ?? 1);
+
+            return View(regions.ToPagedList(pageNumber, pageSize));
         }
 
         public ActionResult Create()

@@ -1,10 +1,22 @@
-﻿@model IEnumerable<WholesaleStore.OrderDelivery>
+﻿@using PagedList.Mvc;
+@model PagedList.IPagedList<WholesaleStore.OrderDelivery>
+
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
 <h2>Order Delivery</h2>
 
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
+
+@using (Html.BeginForm("Index", "OrderDelivery", FormMethod.Get))
+{
+    <p>
+        Find client: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+        <input type="submit" value="Search" />
+    </p>
+}
+
 <table class="table">
     <tr>
         <th>
@@ -14,11 +26,10 @@
             Receive Date
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Employee)
-
+            @Html.ActionLink("Employee", "Index", new { sortOrder = ViewBag.EmployeeSortParm, currentFilter = ViewBag.CurrentFilter })
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Order)
+            @Html.ActionLink("Order", "Index", new { sortOrder = ViewBag.OrderSortParm, currentFilter = ViewBag.CurrentFilter })
         </th>
         <th></th>
     </tr>
@@ -47,6 +58,12 @@
     }
 
 </table>
+
+<br />
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("Index",
+    new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
 
 @section Scripts {
     <script type="text/javascript">

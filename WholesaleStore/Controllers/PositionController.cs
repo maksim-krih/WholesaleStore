@@ -1,4 +1,7 @@
-﻿using System.Net;
+﻿using PagedList;
+using System;
+using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using WholesaleStore.Controllers.Base;
@@ -16,11 +19,45 @@ namespace WholesaleStore.Controllers
 
         }
 
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
-            var positions = await _dataExecutor.ToListAsync(_dataBaseManager.PositionRepository.Query);
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.NameSortParm = sortOrder == "Name" ? "name_desc" : "Name";
 
-            return View(positions);
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
+            var positionsQuery = _dataBaseManager.PositionRepository.Query;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                positionsQuery = positionsQuery.Where(x => x.Name.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    positionsQuery = positionsQuery.OrderByDescending(x => x.Name);
+                    break;
+                case "Name":
+                    positionsQuery = positionsQuery.OrderBy(s => s.Name);
+                    break;
+            }
+
+            var positions = await _dataExecutor.ToListAsync(positionsQuery);
+
+            int pageSize = 7;
+            int pageNumber = (page ?? 1);
+
+            return View(positions.ToPagedList(pageNumber, pageSize));
         }
 
         public ActionResult Create()

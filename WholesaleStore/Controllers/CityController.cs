@@ -1,4 +1,6 @@
-﻿using System.Data.Entity;
+﻿using PagedList;
+using System;
+using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -19,11 +21,60 @@ namespace WholesaleStore.Controllers
 
         }
 
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
-            var cities = await _dataExecutor.ToListAsync(_dataBaseManager.CityRepository.Query.Include(c => c.Region.Country));
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.NameSortParm = sortOrder == "Name" ? "name_desc" : "Name";
+            ViewBag.RegionSortParm = sortOrder == "Region" ? "region_desc" : "Region";
+            ViewBag.CountrySortParm = sortOrder == "Country" ? "country_desc" : "Country";
 
-            return View(cities);
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
+            var citiesQuery = _dataBaseManager.CityRepository.Query
+                .Include(c => c.Region.Country);
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                citiesQuery = citiesQuery.Where(x => x.Name.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    citiesQuery = citiesQuery.OrderByDescending(x => x.Name);
+                    break;
+                case "Name":
+                    citiesQuery = citiesQuery.OrderBy(s => s.Name);
+                    break;
+                case "region_desc":
+                    citiesQuery = citiesQuery.OrderByDescending(x => x.Region.Name);
+                    break;
+                case "Region":
+                    citiesQuery = citiesQuery.OrderBy(s => s.Region.Name);
+                    break;
+                case "country_desc":
+                    citiesQuery = citiesQuery.OrderByDescending(x => x.Region.Country.Name);
+                    break;
+                case "Country":
+                    citiesQuery = citiesQuery.OrderBy(s => s.Region.Country.Name);
+                    break;
+            }
+
+            var cities = await _dataExecutor.ToListAsync(citiesQuery);
+
+            int pageSize = 7;
+            int pageNumber = (page ?? 1);
+
+            return View(cities.ToPagedList(pageNumber, pageSize));
         }
 
         public ActionResult Create()

@@ -1,4 +1,7 @@
-﻿using System.Net;
+﻿using PagedList;
+using System;
+using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using WholesaleStore.Controllers.Base;
@@ -16,11 +19,45 @@ namespace WholesaleStore.Controllers
 
         }
 
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
-            var countries = await _dataExecutor.ToListAsync(_dataBaseManager.CountryRepository.Query);
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.NameSortParm = sortOrder == "Name" ? "name_desc" : "Name";
+            
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
 
-            return View(countries);
+            ViewBag.CurrentFilter = searchString;
+
+            var countriesQuery = _dataBaseManager.CountryRepository.Query;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                countriesQuery = countriesQuery.Where(x => x.Name.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    countriesQuery = countriesQuery.OrderByDescending(x => x.Name);
+                    break;
+                case "Name":
+                    countriesQuery = countriesQuery.OrderBy(s => s.Name);
+                    break;
+            }
+
+            var countries = await _dataExecutor.ToListAsync(countriesQuery);
+
+            int pageSize = 7;
+            int pageNumber = (page ?? 1);
+
+            return View(countries.ToPagedList(pageNumber, pageSize));
         }
 
         public ActionResult Create()

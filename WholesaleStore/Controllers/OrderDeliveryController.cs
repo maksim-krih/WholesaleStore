@@ -1,4 +1,7 @@
-﻿using System.Data.Entity;
+﻿using PagedList;
+using System;
+using System.Data.Entity;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -17,11 +20,55 @@ namespace WholesaleStore.Controllers
 
         }
 
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
-            var orderDeliveries = await _dataExecutor.ToListAsync(_dataBaseManager.OrderDeliveryRepository.Query.Include(o => o.Employee).Include(o => o.Order));
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.EmployeeSortParm = sortOrder == "Employee" ? "employee_desc" : "Employee";
+            ViewBag.OrderSortParm = sortOrder == "Order" ? "order_desc" : "Order";
 
-            return View(orderDeliveries);
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
+            var orderDeliveriesQuery = _dataBaseManager.OrderDeliveryRepository.Query
+                .Include(o => o.Employee).Include(o => o.Order);
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                orderDeliveriesQuery = orderDeliveriesQuery.Where(x => 
+                x.Employee.FirstName.Contains(searchString) ||
+                x.Employee.LastName.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "employee_desc":
+                    orderDeliveriesQuery = orderDeliveriesQuery.OrderByDescending(x => x.Employee.FirstName).ThenByDescending(x => x.Employee.LastName);
+                    break;
+                case "Employee":
+                    orderDeliveriesQuery = orderDeliveriesQuery.OrderBy(s => s.Employee.FirstName).ThenBy(x => x.Employee.LastName);
+                    break;
+                case "order_desc":
+                    orderDeliveriesQuery = orderDeliveriesQuery.OrderByDescending(x => x.Order.Number);
+                    break;
+                case "Order":
+                    orderDeliveriesQuery = orderDeliveriesQuery.OrderBy(s => s.Order.Number);
+                    break;
+            }
+
+            var orderDeliveries = await _dataExecutor.ToListAsync(orderDeliveriesQuery);
+
+            int pageSize = 7;
+            int pageNumber = (page ?? 1);
+
+            return View(orderDeliveries.ToPagedList(pageNumber, pageSize));
         }
 
         public ActionResult Create()
